@@ -1,0 +1,62 @@
+.card{
+
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 20% 50% 50% 50%;
+    width : 100%;
+    height : 100%;
+    border-right: solid;
+    box-sizing: border-box;
+}
+
+.hcard{
+
+    display: grid;
+    grid-template-columns: 16% 84%;
+    grid-template-rows: 50% 50%;
+    width : 100%;
+    height : 100%;
+    justify-content: center;
+    align-items: center;
+    border-right: solid;
+    border-top: solid;
+    box-sizing: border-box;
+    border-left: solid;
+    
+}
+
+.title-span{
+
+    font-size: 1.5vh;
+    
+}
+
+.price-span{
+
+    height : 100%;
+    font-size : 1.5vh;
+
+}
+
+
+
+.color-banner-hr{
+
+    grid-row: span 2;
+    height : 100%;
+    border-right: solid;
+}
+
+.color-banner-hl{
+
+    grid-row: span 2;
+    height : 100%;
+    border-left: solid;
+}
+
+
+.color-banner{
+
+    border-bottom: solid;
+
+}
