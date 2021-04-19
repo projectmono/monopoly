@@ -1,0 +1,48 @@
+
+/* Conteneur d'un adversaire */
+.OpponentContainer{
+
+    width : 90%;
+    height : 7vh;
+    border-radius: 5px;
+    background:#A1BBB2;
+    display: grid;
+    border-style: solid;
+}
+
+.opponent-wrapper{
+
+    width : 90%;
+    height : 80%;
+    display : grid;
+    grid-template-columns: 25% 50% 25%;
+    grid-template-rows: 50% 50%;
+
+    align-self: center;
+    justify-self: center;
+    justify-items: center;
+    align-items: center;
+    
+}
+
+.player-avatar-img{
+
+    height : 90%;
+    width : 100%;
+    background-color: white;
+    border-radius: 100%;
+    grid-row : span 2;
+}
+
+
+.player-name{
+
+    font-family : Verdana;
+
+}
+
+.player-infos{
+
+    grid-row: span 2;
+
+}

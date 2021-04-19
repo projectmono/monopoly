@@ -1,0 +1,53 @@
+
+.BoardWrapper{
+
+    background-color: #cbe2c5;
+    height : 98vh; 
+    width : 98vh;
+    display: grid;
+    grid-template-columns: 13% 74% 13%;
+    grid-template-rows: 14% 72% 14%;
+
+}
+
+.ns-sides{/* le haut et le bas du plateu*/
+
+    height : 100%;
+    grid-column: span 3;
+    display: grid;
+    grid-template-columns: 13% repeat(9, 8.222%) 13%
+
+}
+
+.middle-section{ /*le centre du plateau*/
+
+    border-top: solid;
+
+}
+
+.we-side{ /*coté gauche et droit du plateau*/
+ 
+    display: grid;
+    grid-template-rows: repeat(9, 11.10%);
+
+}
+
+.reverse-grid{/*^pour inverser les cartes*/
+
+    direction : rtl;
+
+}
+
+.tl-ns-border{/*les bords gauche haut du plateau */
+
+    border-style: solid hidden hidden solid;
+    box-sizing: border-box;
+
+}
+
+.lt-ns-border{
+
+    border-style: solid hidden solid solid;
+    box-sizing: border-box;
+
+}

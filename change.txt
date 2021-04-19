@@ -1,0 +1,3 @@
++ Rajout d'un fichier global CSS
++ Restructuration CSS : il y avait beaucoup de redondance dans le code, et il devenait difficile à maintenir
++ Mise à jour de la structure du projet entier

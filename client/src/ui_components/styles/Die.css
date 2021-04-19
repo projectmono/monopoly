@@ -1,0 +1,23 @@
+.die-button{
+    
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color : transparent;
+    height : 5rem;
+    width : 60%;
+    padding: 0;
+    border : 0;
+
+}
+
+.die-style{
+
+    background-color: beige;
+    height : 90%;
+    width: 45%;
+    border-style: solid;
+    border-radius: 10%;
+    border-width: 3px;
+
+}
