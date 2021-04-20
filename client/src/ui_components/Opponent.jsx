@@ -3,6 +3,14 @@ import './styles/Opponent.css'
 
 
 class Opponent extends Component{
+
+
+    constructor(props) {
+        super(props)
+    
+    }
+    
+
     render(){
         return(
             
@@ -20,7 +28,7 @@ class Opponent extends Component{
 
                         <div className="player-name">
 
-                            <span>Caesar</span>
+                            <span>{this.props.player}</span>
 
                         </div>
 

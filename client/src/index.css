@@ -16,3 +16,10 @@ html{
   font-size: 16px;
 }
 
+#root{
+  display: flex;
+  height : 100vh;
+  justify-content: center;
+  align-items: center;
+  background-image: url("./ui_components/img/monopoly_background2.jfif");
+}

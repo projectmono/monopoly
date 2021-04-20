@@ -35,5 +35,13 @@
     justify-content: center;
     align-items: center;
 
-    
+}
+
+.button-default{
+
+    border : 0;
+    border-radius : 5px;
+    height : 3.3rem;
+    width : 10rem;
+
 }

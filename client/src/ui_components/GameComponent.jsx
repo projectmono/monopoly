@@ -6,17 +6,54 @@ import Opponent from './Opponent.jsx'
 import Die from './Die'
 import './styles/Global.css'
 import './styles/Die.css'
-
+import socket from "../connections_components/socket_config";
 
 /* C'est le composant principale qui englobe la totalité de l'interface et la logique front-end du jeu */
 class GameComponent extends Component {
 
+    constructor(props) {
+        super(props)
+    
+        this.state = {
+            players : []         
+        }
+
+        this.eventHandler = this.eventHandler.bind(this);
+    }
+
+    componentDidMount(){
+
+        this.eventHandler();
+
+    }
+    
+
+    eventHandler(){
+
+
+        socket.on("playerJoined", function(userName, callback){
+
+            this.setState({
+
+                players : userName
+
+            }, () => {console.log(this.state.players)})
+
+        }.bind(this))
+
+    }
+
+
+
     render(){
 
-        return(
 
+        return(
+            
+            
             /* le conteneur du corps du jeu */
             <div className="MainWrapper" >
+                
                 
                 {/* M'entete du jeu - à retirer */}
                 <div className="header">
@@ -32,8 +69,7 @@ class GameComponent extends Component {
 
                         <div className = "opponents-sidebar">
 
-                            <Opponent/>
-                            <Opponent/>
+                            {this.state.players.map(x => <Opponent player={x} /> )}
 
                         </div>
 

@@ -1,0 +1,46 @@
+.grid-container-styles{
+
+    height : 80vh;
+    width : 80vw;
+    background-color: #c0c7ef;
+    grid-template-rows : 5% 40% !important;
+    grid-template-columns: 80% !important;
+
+}
+
+.lggrid-container-styles{
+
+    height : 100%;
+    width : 50%;
+    grid-template-columns: 50% 50% !important;
+    background-color: #B3ADDA;
+
+}
+
+.span-columns{
+
+    grid-column: span 2;
+
+}
+
+.input-styles{
+
+    height : 3rem;
+    width : 30rem;
+    border : 0;
+    border-radius: 2%;
+    text-align: center;
+
+}
+
+.lgcb-ml{
+
+    margin-left : 8rem;
+    
+}
+
+.lgcb-mr{
+
+    margin-right : 8rem;
+    
+}
