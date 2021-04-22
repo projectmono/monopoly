@@ -105,7 +105,7 @@ export default class Login extends Component {
 
                     <div className="grid-item span-columns">
 
-                       <input className ="input-styles" type="text" placeholder="Username" value={this.state.userName} placeholder="Room Name" onChange={this.setUserName}/>
+                       <input className ="input-styles" type="text" placeholder="Username" value={this.state.userName} onChange={this.setUserName}/>
 
                     </div>
                     <div className="grid-item span-columns">
