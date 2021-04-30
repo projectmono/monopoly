@@ -1,77 +1,24 @@
 import React, { Component } from 'react'
 import './styles/Card.css'
 
-class Card extends Component {
-
-
-    
+class Card extends Component { 
     render(){
-
-        let banner = null;
-        let title = null;
-        let image = null;
-        let price = null;
-        
-        {/* c'est celon la couleur la  */}
-        if ( this.props.style ){
-
-            banner = <div className="color-banner" style={this.props.style}>
-                    
-            </div>
-
- 
-        }
-        if ( this.props.title ){
-
-            title =<div className="title-span"> 
-
-                            <span>{this.props.title}</span>
-
-                         </div>
-
-        }
-        if ( this.props.image ){
-
-            image = <div className="img-area">
-
-                            <span>{this.props.image}</span>
-
-                          </div>
-
-        }
-        if ( this.props.price ){
-
-            price = <div className="price-span">
-
-
-            </div>
-
-        }
-        
-        
-        return (
-
-        
-            
+        const bannerInfo = this.props.style && (<div className="color-banner" style={this.props.style}></div>)
+        const titlteInfo = this.props.title && (<div className="title-span"><span>{this.props.title}</span></div>)
+        const imageInfo  = this.props.image && (<div className="img-area"><span>{this.props.image}</span></div>)    
+        const priceInfo  = this.props.price && (<div className="price-span"></div>)
+        const posInfo    = this.props.position && (<div className="">{this.props.position}</div>)
+        return (   
             <div className="card ">
-                
-                {banner}
-                {title}
-                {image}
-                {price}
-
+                {bannerInfo}
+                {titlteInfo}
+                {imageInfo}
+                {priceInfo}
+                {posInfo}
             </div> 
-
-
         );
-
     }
-
-
-
 }
-
-
 export default Card;
 
 

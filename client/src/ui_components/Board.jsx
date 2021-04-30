@@ -4,15 +4,10 @@ import Card from './Card.jsx'
 import HorizontalCard from './HorizontalCard'
 
 class Board extends Component {
-
     render(){
-
         return (
-
             <div className = "BoardWrapper">
-                
                 <div className="ns-sides tl-ns-border">
-                    
                     <Card title={null} style={null} image={null} price={null} />
                     <Card title="Strand" style={{ backgroundColor : '#DA2327'}} image={null} price={null} />
                     <Card title="Chance" style={null} image={null} price={null} />
@@ -24,29 +19,21 @@ class Board extends Component {
                     <Card title="Coventry Street" style={{ backgroundColor : '#fef102'}} image={null} price={null} />
                     <Card title="Piccadilly" style={{ backgroundColor : '#fef102'}} image={null} price={null} />
                     <Card title={null} style={null} image={null} price={null} />
-
                 </div>
-
                 <div className="we-side">
-                
-                    <HorizontalCard style ={{backgroundColor : '#e98b29'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl"/>
-                    <HorizontalCard style ={{backgroundColor : '#e98b29'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl"/>
-                    <HorizontalCard />
-                    <HorizontalCard style ={{backgroundColor : '#e98b29'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl"/>
-                    <HorizontalCard />
-                    <HorizontalCard style ={{backgroundColor : '#c53982'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl"/>
-                    <HorizontalCard style ={{backgroundColor : '#c53982'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl"/>
-                    <HorizontalCard />
-                    <HorizontalCard style ={{backgroundColor : '#c53982'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl"/>
-
+                    <HorizontalCard style ={{backgroundColor : '#e98b29'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl" position={20}/>
+                    <HorizontalCard style ={{backgroundColor : '#e98b29'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl" position={19}/>
+                    <HorizontalCard position={18}/>
+                    <HorizontalCard style ={{backgroundColor : '#e98b29'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl" position={17}/>
+                    <HorizontalCard position={16}/>
+                    <HorizontalCard style ={{backgroundColor : '#c53982'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl"position={15}/>
+                    <HorizontalCard style ={{backgroundColor : '#c53982'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl"position={14}/>
+                    <HorizontalCard position={13}/>
+                    <HorizontalCard style ={{backgroundColor : '#c53982'} } title="Regent Street" price={55 + "$"} reverse = "reverse-grid" colorbanner="color-banner-hl" position={12}/>
                 </div>
-
                 <div className="middle-section ">
-
                 </div>
-
                 <div className="we-side ">
-                
                     <HorizontalCard style ={{backgroundColor : 'green'} } title="Regent Street" price={55 + "$"} colorbanner="color-banner-hr"/>
                     <HorizontalCard style ={{backgroundColor : 'green'} } title="Regent Street" price={55 + "$"} colorbanner="color-banner-hr"/>
                     <HorizontalCard />
@@ -56,35 +43,22 @@ class Board extends Component {
                     <HorizontalCard style ={{backgroundColor : '#0065a3'} } title="Regent Street" price={55 + "$"} colorbanner="color-banner-hr"/>
                     <HorizontalCard />
                     <HorizontalCard style ={{backgroundColor : '#0065a3'} } title="Regent Street" price={55 + "$"} colorbanner="color-banner-hr"/>
-
                 </div>
-
                 <div className="ns-sides lt-ns-border ">
-
-                    <Card title={null} style={null} image={null} price={null} />
-                    <Card title="Pent.V Road" style={{ backgroundColor : '#abdbef'}} image={null} price={null} />
-                    <Card title="Euston Road" style={{ backgroundColor : '#abdbef'}} image={null} price={null} />
-                    <Card title="Card" style={null} image={null} price={null} />
-                    <Card title="The Angel Isle" style={{ backgroundColor : '#abdbef'}} image={null} price={null} />
-                    <Card title="Card" style={null} image={null} price={null} />
-                    <Card title="Card" style={null} image={null} price={null} />
-                    <Card title="White Chapel Road" style={{ backgroundColor : '#854b37'}} image={null} price={null} />
-                    <Card title="Card" style={null} image={null} price={null} />
-                    <Card title="Old Kent Road" style={{ backgroundColor : '#854b37'}} image={null} price={null} />
-                    <Card title={null} style={null} image={null} price={null} />
-
-
+                    <Card title={null} style={null} image={null} price={null} position={11}/>
+                    <Card title="Pent.V Road" style={{ backgroundColor : '#abdbef'}} image={null} price={null} position={10}/>
+                    <Card title="Euston Road" style={{ backgroundColor : '#abdbef'}} image={null} price={null} position={9}/>
+                    <Card title="Card" style={null} image={null} price={null} position={8}/>
+                    <Card title="The Angel Isle" style={{ backgroundColor : '#abdbef'}} image={null} price={null} position={7}/>
+                    <Card title="Card" style={null} image={null} price={null} position={6}/>
+                    <Card title="Card" style={null} image={null} price={null} position={5}/>
+                    <Card title="White Chapel Road" style={{ backgroundColor : '#854b37'}} image={null} price={null} position={4}/>
+                    <Card title="Card" style={null} image={null} price={null} position={3}/>
+                    <Card title="Old Kent Road" style={{ backgroundColor : '#854b37'}} image={null} price={null} position={2}/>
+                    <Card title={null} style={null} image={null} price={null} position={1}/>
                 </div>
-
             </div>
-
         );
-
-
     }
-
-    
-
 }
-
 export default Board;
