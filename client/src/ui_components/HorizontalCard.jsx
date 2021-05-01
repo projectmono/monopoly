@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './styles/Card.css'
+import './styles/Card.scss'
 import classnames from 'classnames';
 
 class HorizontalCard extends Component {  
@@ -11,15 +11,13 @@ class HorizontalCard extends Component {
         const imageInfo = this.props.image && (<div className="img-area"><span>{this.props.image}</span></div>)
         const priceInfo = this.props.price && (<div className="price-span"><span>{this.props.price}</span></div>)
        // const reversedInfo = this.props.reversed && (reversed = ".reverse-grid")
-        const posInfo    = this.props.position && (<div className="">{this.props.position}</div>)
+        //const posInfo    = this.props.position && (<div className="">{this.props.position}</div>)
         return (
             <div className={classnames('hcard', this.props.reverse)}>
                 {bannerInfo}
                 {titlteInfo}
                 {imageInfo}
-                {priceInfo}
-                {posInfo}
-                {/*reversedInfo*/}
+                
             </div> 
         );
     }

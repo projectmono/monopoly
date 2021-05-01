@@ -1,5 +1,5 @@
 import { Component } from "react";
-import './styles/Opponent.css'
+import './styles/Opponent.scss'
 
 
 class Opponent extends Component{

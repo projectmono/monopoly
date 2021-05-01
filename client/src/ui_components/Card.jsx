@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './styles/Card.css'
+import './styles/Card.scss'
 
 class Card extends Component { 
     render(){
@@ -9,12 +9,12 @@ class Card extends Component {
         const priceInfo  = this.props.price && (<div className="price-span"></div>)
         const posInfo    = this.props.position && (<div className="">{this.props.position}</div>)
         return (   
-            <div className="card ">
+            <div className="card">
                 {bannerInfo}
                 {titlteInfo}
                 {imageInfo}
                 {priceInfo}
-                {posInfo}
+                
             </div> 
         );
     }

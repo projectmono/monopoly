@@ -1,0 +1,47 @@
+@import 'Global.scss';
+
+.MainWrapper{
+
+    @include grid-container-mixin(center, center, 25% 50% 25%);
+    width : 100%;
+    background-color: #5B8588;
+    background-image: url("../img/monopoly_background2.jfif");
+}
+
+.sidebar{
+
+    @include grid-container-mixin(space-around, center, 100%, 48% 48%);
+    height : 98vh;
+    width : 60%;
+    background-color: #c0c7ef;
+
+}
+
+.grid-item-dice-container-styles{
+
+    background : radial-gradient(rgb(202, 17, 219),rgb(85, 6, 85));
+    border-radius: 1%;
+    height : 6.5rem;
+    width : 100%;
+    background-color: purple;
+
+}
+
+
+.opponents-sidebar{
+
+    
+    @include grid-container-mixin(start, center, 100%, repeat(8, 20%));
+    height : 100%;
+    width : 95%;
+    background-color: #6f4cc0;
+    
+}
+
+.log-wrapper{
+
+    height : 100%;
+    width : 95%;
+    background-color: #6270be;
+    border-radius: 1%;
+}

@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import io from 'socket.io-client'
 import { Redirect } from 'react-router-dom'
-import './styles/Global.css'
-import './styles/Login.css'
+import './styles/Global.scss'
+import './styles/Login.scss'
 import socket from "../connections_components/socket_config";
 
 

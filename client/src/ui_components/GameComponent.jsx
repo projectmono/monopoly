@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import Board from './Board.jsx'
-import './styles/GameComponentStyles.css'
+import './styles/GameComponentStyles.scss'
 import Card from './Card.jsx'
 import Opponent from './Opponent.jsx'
 import Die from './Die'
-import './styles/Global.css'
-import './styles/Die.css'
+import './styles/Global.scss'
+import './styles/Die.scss'
 import socket from "../connections_components/socket_config";
 
 /* C'est le composant principale qui englobe la totalité de l'interface et la logique front-end du jeu */
@@ -55,17 +55,11 @@ class GameComponent extends Component {
             <div className="MainWrapper" >
                 
                 
-                {/* M'entete du jeu - à retirer */}
-                <div className="header">
-                    
-                    <h1></h1>
-
-                </div>
 
                 {/* le conteneur de la barre de coté gauche */}
                 <div className="sidebar">
 
-                    <div className="left-sidebar">
+                    
 
                         <div className = "opponents-sidebar">
 
@@ -76,11 +70,9 @@ class GameComponent extends Component {
                         <div className= "log-wrapper">
 
 
-
-
                         </div>
 
-                    </div>
+                    
 
                 </div>
 
@@ -104,13 +96,6 @@ class GameComponent extends Component {
 
                 </div>
 
-
-                {/* la barre de bas - à enlever */}
-                <div className="GameStatsWrapper">
-
-                <h1></h1>
-                    
-                </div>
 
                 
             </div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './styles/Die.css'
+import './styles/Die.scss'
 
 
 

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import './styles/Board.css'
+import './styles/Board.scss'
 import Card from './Card.jsx'
 import HorizontalCard from './HorizontalCard'
 
