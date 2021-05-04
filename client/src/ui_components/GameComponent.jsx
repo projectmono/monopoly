@@ -15,10 +15,12 @@ class GameComponent extends Component {
         super(props)
     
         this.state = {
-            players : []         
+            players : {},
         }
 
         this.eventHandler = this.eventHandler.bind(this);
+        this.assignColors = this.assignColors.bind(this);
+
     }
 
     componentDidMount(){
@@ -31,25 +33,91 @@ class GameComponent extends Component {
     eventHandler(){
 
 
-        socket.on("playerJoined", function(userName, callback){
-
+        socket.on("playerJoined", function(players, callback){
+            
+            let playersCopy = this.assignColors(players)
+            
             this.setState({
 
-                players : userName
+                players : playersCopy
 
-            }, () => {console.log(this.state.players)})
+            })
 
         }.bind(this))
 
     }
 
+    assignColors(players){
 
+        let colors = Object.keys(this.props.colors);
+        let playersArray = Object.keys(players)
+
+
+        for (const player of playersArray ){
+
+            if ( player == this.props.userName ){
+
+                let color;
+
+                for ( const c of colors ){
+
+                    if ( this.props.colors[c]){
+
+                        color = c;
+
+                    }
+
+                }
+
+
+                players[this.props.userName].color = color;
+                colors.splice(colors.indexOf(color), 1);
+
+            }else{
+
+                let color
+
+                for ( const c of colors ){
+
+                    if ( !this.props.colors[c] ){
+
+                        color = c;
+
+                    }
+
+                }
+
+                
+
+                players[player].color = color;
+                colors.splice(colors.indexOf(color), 1);
+
+            }
+
+
+        }
+
+        return players
+
+    }
+
+    getColor(boolean){
+
+        if ( boolean ){
+
+            return Object.keys(this.props.colors).find(element => element && this.props.colors[element])
+
+        }
+
+        return Object.keys(this.props.colors).find(element => element && !this.props.colors[element])
+
+
+    }
 
     render(){
 
 
         return(
-            
             
             /* le conteneur du corps du jeu */
             <div className="MainWrapper" >
@@ -58,12 +126,17 @@ class GameComponent extends Component {
 
                 {/* le conteneur de la barre de coté gauche */}
                 <div className="sidebar">
-
+                    
                     
 
                         <div className = "opponents-sidebar">
 
-                            {this.state.players.map(x => <Opponent player={x} /> )}
+
+                            {Object.keys(this.state.players).map(player => 
+
+                                <Opponent player = {player} color = {this.state.players[player].color}/>
+
+                            )}
 
                         </div>
 

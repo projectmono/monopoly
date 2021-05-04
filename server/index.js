@@ -23,11 +23,14 @@ const {createRoom, joinRoom} = require('./rooms');
 io.on('connection', function(socket){
 
     console.log(`user ${socket.id} connected`);
+    let colors = ['blue', 'red', 'green', 'yellow', 'black', 'orange']
+    let roomsColors = {}
 
     // When a user tries to create a room, this event fires.
     socket.on('createRoomEvent', function(roomName, userName ,callback){
         
         socket.data.username = userName;
+
         roomNameOk =  createRoom(io ,socket, roomName)
         
         callback({
@@ -38,11 +41,18 @@ io.on('connection', function(socket){
 
         if ( roomNameOk[0] ){
             
-            const rooms = io.of("/").adapter.rooms;
-            let userName = [];
+            
+            let playersMap = {}
+            let player = {};
+
             const players = io.sockets.adapter.rooms.get(roomName);
-            players.forEach(x => { userName.push(io.sockets.sockets.get(x).data.username) })
-            io.to(roomName).emit("playerJoined", userName)
+            players.forEach(x => { 
+                
+                playersMap[io.sockets.sockets.get(x).data.username] = player
+            
+            })
+            console.log(playersMap)
+            io.to(roomName).emit("playerJoined", playersMap)
 
         }
         
@@ -50,7 +60,7 @@ io.on('connection', function(socket){
     })
 
     // When a user tries to join a room, this event fires
-    socket.on('joinRoomEvent', function(roomName, userName, callback){
+    socket.on('joinRoomEvent', function(roomName, userName ,callback){
         
         
         socket.data.username = userName;
@@ -64,11 +74,15 @@ io.on('connection', function(socket){
 
         if ( roomNameOk[0] ){
             
-            const rooms = io.of("/").adapter.rooms;
-            let userName = [];
+            let playersMap = {}
+            let player = {};
             const players = io.sockets.adapter.rooms.get(roomName);
-            players.forEach(x => { userName.push(io.sockets.sockets.get(x).data.username) })
-            io.to(roomName).emit("playerJoined", userName)
+            players.forEach(x => { 
+                
+                playersMap[io.sockets.sockets.get(x).data.username] = player
+            
+            })
+            io.to(roomName).emit("playerJoined", playersMap)
 
         }
 

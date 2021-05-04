@@ -1,10 +1,13 @@
+@import 'Global.scss';
+
 .grid-container-styles{
 
-    height : 35rem;
+    height : 50rem;
     width : 75rem;
     background-color: #c0c7ef;
-    grid-template-rows : 1.5rem 19rem !important;
-    grid-template-columns: 45rem !important;
+    grid-template-rows : 1.5rem 19rem 13rem !important;
+    grid-template-columns: 70rem !important;
+    align-content: space-around !important;
 
 }
 
@@ -42,4 +45,32 @@
 
     margin-right : 8rem;
     
+}
+
+.player-colors{
+
+    @include grid-container-mixin(center, center, repeat(6, 16.66%), 100%);
+    width : 100%;
+
+}
+
+.color-circle{
+
+    height : 5rem;
+    width : 5rem;
+    border-radius: 100%;
+    background-color: blue;
+
+}
+
+.player-colors-title{
+
+    grid-column: span 6;
+    width : 100%;
+    text-align: center;
+}
+
+.checker{
+    height : 6rem;
+    width : 6rem;
 }

@@ -1,20 +1,34 @@
 import { Component } from "react";
 import './styles/Opponent.scss'
+import styled from 'styled-components'
 
+
+const OpponentContainer = styled.div`
+
+    width : 90%;
+    height : 7vh;
+    border-radius: 5px;
+    background:#A1BBB2;
+    display: grid;
+    border-color : ${props => (props.color)};
+    border-style: solid;
+
+
+`
 
 class Opponent extends Component{
 
 
     constructor(props) {
         super(props)
-    
+
     }
     
 
     render(){
         return(
             
-               <div className="OpponentContainer">
+               <OpponentContainer color ={this.props.color}>
 
                 
 
@@ -26,11 +40,10 @@ class Opponent extends Component{
 
                         </div>
 
-                        <div className="player-name">
+                        
+                        <span>{this.props.player}</span>
 
-                            <span>{this.props.player}</span>
 
-                        </div>
 
                         <div className="player-infos"> 
 
@@ -50,7 +63,7 @@ class Opponent extends Component{
 
                     </div>
 
-                </div>
+                </OpponentContainer>
             
             
         );
