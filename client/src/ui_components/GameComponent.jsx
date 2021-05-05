@@ -34,9 +34,9 @@ class GameComponent extends Component {
 
 
         socket.on("playerJoined", function(players, callback){
-            
+
             let playersCopy = this.assignColors(players)
-            
+
             this.setState({
 
                 players : playersCopy
@@ -151,7 +151,7 @@ class GameComponent extends Component {
 
                 {/*Le plateau du jeu */}
                 <div className="board-area">
-                    <Board />
+                    <Board players ={this.state.players}/>
                 </div>
 
 

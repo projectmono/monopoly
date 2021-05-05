@@ -10,6 +10,13 @@
 }
 
 
+.card-body-grid-container{
+
+    @include grid-container-mixin(center, center, 50% 50%, repeat(3, 33.33%));
+
+}
+
+
 .hcard{
 
     @include grid-container-mixin(center, center stretch, 16% 84%, 50% 50%);
@@ -49,6 +56,7 @@
     grid-row: span 2;
     height : 100%;
     border-right: solid;
+
 }
 
 .color-banner-hl{
@@ -58,3 +66,8 @@
     border-left: solid;
 }
 
+.span-row{
+
+    grid-row : span 4;
+
+}

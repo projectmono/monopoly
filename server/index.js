@@ -30,6 +30,8 @@ io.on('connection', function(socket){
     socket.on('createRoomEvent', function(roomName, userName ,callback){
         
         socket.data.username = userName;
+        socket.data.position = 0;
+        socket.data.money = 1500;
 
         roomNameOk =  createRoom(io ,socket, roomName)
         
@@ -43,7 +45,7 @@ io.on('connection', function(socket){
             
             
             let playersMap = {}
-            let player = {};
+            let player = { position : socket.data.position, money : socket.data.money };
 
             const players = io.sockets.adapter.rooms.get(roomName);
             players.forEach(x => { 
@@ -64,6 +66,9 @@ io.on('connection', function(socket){
         
         
         socket.data.username = userName;
+        socket.data.position = 0;
+        socket.data.money = 1500;
+
         roomNameOk =  joinRoom(io ,socket, roomName)
         
         callback({
@@ -75,7 +80,7 @@ io.on('connection', function(socket){
         if ( roomNameOk[0] ){
             
             let playersMap = {}
-            let player = {};
+            let player = { position : socket.data.position, money : socket.data.money };
             const players = io.sockets.adapter.rooms.get(roomName);
             players.forEach(x => { 
                 
