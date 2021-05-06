@@ -53,7 +53,7 @@ io.on('connection', function(socket){
                 playersMap[io.sockets.sockets.get(x).data.username] = player
             
             })
-            console.log(playersMap)
+            
             io.to(roomName).emit("playerJoined", playersMap)
 
         }
@@ -90,6 +90,16 @@ io.on('connection', function(socket){
             io.to(roomName).emit("playerJoined", playersMap)
 
         }
+
+    })
+
+    socket.on("rollDice", function(playerName){
+
+
+        let room = Array.from(socket.rooms)[1];
+        let randomValue = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
+
+        io.to(room).emit("diceRoll", randomValue, socket.data.username);
 
     })
 
