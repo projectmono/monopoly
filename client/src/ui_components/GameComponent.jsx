@@ -28,6 +28,20 @@ class GameComponent extends Component {
         this.eventHandler();
 
     }
+
+    setPlayerPos(position){
+
+        let players = {...this.state.players};
+
+        players[this.props.userName].position =  position;
+
+        this.setState({
+
+            players : players
+
+        })
+
+    }
     
 
     eventHandler(){
@@ -42,6 +56,25 @@ class GameComponent extends Component {
                 players : playersCopy
 
             })
+
+        }.bind(this))
+
+
+        socket.on("diceRoll", function(roll, userName){
+
+            let players = {...this.state.players};
+
+            console.log("roll : " + roll);
+
+            for (let i = 1; i <= roll; i++ ){
+
+                players[userName].position = ( players[userName].position + 1 ) % 40;
+                this.setState((state) => ({ players : state.players } ));
+
+            }
+
+            console.log(this.state.players[userName].position);
+            
 
         }.bind(this))
 
@@ -161,7 +194,7 @@ class GameComponent extends Component {
 
                     <div className ="grid-item grid-item-dice-container-styles">
 
-                        <Die />
+                        <Die setPlayerPos = {this.setPlayerPos} playerName={this.props.userName} />
 
                     </div>
 

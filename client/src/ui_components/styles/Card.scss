@@ -12,7 +12,10 @@
 
 .card-body-grid-container{
 
-    @include grid-container-mixin(center, center, 50% 50%, repeat(3, 33.33%));
+    /*@include grid-container-mixin(center, center, 50% 50%, repeat(3, 33.33%));*/
+    display : flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 
 }
 

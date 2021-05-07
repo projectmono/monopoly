@@ -17,12 +17,16 @@ const CardBody = styled.div`
 const Pawn = styled.div`
 
     mask-image: url(${pawn});
-    width : 100%;
-    height : 100%;
     background-color : ${props => props.pawnColor};
     mask-size : 60%;
     mask-repeat: no-repeat;
     mask-position: center;
+
+    min-height : 50%;
+    min-width : 50%;
+    
+    flex-grow : 1;
+    flex-shrink : 2;
 
 `
 
@@ -48,7 +52,6 @@ class Card extends Component {
         
         <CardBody backgroundImg = {this.props.backgroundImg} className = {`${this.props.span} card-body-grid-container`}>
 
-            
             {Object.keys(this.props.players).map(player => this.props.players[player].position == this.props.position ? 
             <Pawn pawnColor ={this.props.players[player].color}></Pawn> :
             null )}
