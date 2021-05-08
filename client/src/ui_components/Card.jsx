@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import './styles/Card.scss'
 import styled from 'styled-components'
-import pawn from './img/pawn.svg'
-
+import { CardTitle, Pawn } from './styles/Card_Styles'
 
 const CardBody = styled.div`
 
@@ -12,24 +11,9 @@ const CardBody = styled.div`
     background-repeat : no-repeat;
     background-size : 90%;
     background-position : center;
+    grid-row : ${props => props.span};
 
 `
-const Pawn = styled.div`
-
-    mask-image: url(${pawn});
-    background-color : ${props => props.pawnColor};
-    mask-size : 60%;
-    mask-repeat: no-repeat;
-    mask-position: center;
-
-    min-height : 50%;
-    min-width : 50%;
-    
-    flex-grow : 1;
-    flex-shrink : 2;
-
-`
-
 
 class Card extends Component { 
 
@@ -46,11 +30,10 @@ class Card extends Component {
 
     render(){
         const bannerInfo = this.props.style && (<div className="color-banner" style={this.props.style}></div>)
-        const titlteInfo = this.props.title && (<div className="title-span"><span>{this.props.title}</span></div>)
-
+        const titlteInfo = this.props.title && (<CardTitle position = {this.props.position}> <span>{this.props.title}</span> </CardTitle>)
         const imageInfo  = this.props.players && (
         
-        <CardBody backgroundImg = {this.props.backgroundImg} className = {`${this.props.span} card-body-grid-container`}>
+        <CardBody span={this.props.span} backgroundImg = {this.props.backgroundImg} className = {`card-body-grid-container`}>
 
             {Object.keys(this.props.players).map(player => this.props.players[player].position == this.props.position ? 
             <Pawn pawnColor ={this.props.players[player].color}></Pawn> :
@@ -61,7 +44,7 @@ class Card extends Component {
         
         )
 
-        const priceInfo  = this.props.price && (<div className="price-span"></div>)
+        const priceInfo  = this.props.price && (<div className="price-span"><span>{this.props.price}</span></div>)
         const posInfo    = this.props.position && (<div className="">{this.props.position}</div>)
         return (   
             <div className="card">

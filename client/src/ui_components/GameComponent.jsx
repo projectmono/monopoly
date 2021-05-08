@@ -7,6 +7,32 @@ import Die from './Die'
 import './styles/Global.scss'
 import './styles/Die.scss'
 import socket from "../connections_components/socket_config";
+import styled from 'styled-components'
+
+
+const ActionButton = styled.button`
+
+    width : 90%;
+    height : 5rem;
+    background-color : #A994C3;
+    margin-top : 1rem;
+    border : 0;
+    border-radius : 3%;
+    font-family : "Trocchi";
+    font-size : 1.5rem;
+    transition-duration: 0.4s;
+    &:hover{
+
+        background-color : #8e5ccc;
+    
+    }
+
+`
+
+
+
+
+
 
 /* C'est le composant principale qui englobe la totalité de l'interface et la logique front-end du jeu */
 class GameComponent extends Component {
@@ -40,6 +66,12 @@ class GameComponent extends Component {
             players : players
 
         })
+
+    }
+
+    setReady(){
+
+        socket.emit("ready");
 
     }
     
@@ -77,6 +109,24 @@ class GameComponent extends Component {
             
 
         }.bind(this))
+
+
+
+        socket.on("gameStart", function(callback){
+
+
+
+
+
+        }.bind(this))
+
+        socket.on("playerHasTurn", function(userName){
+
+
+            console.log("Player has turn : " + userName);
+
+
+        })
 
     }
 
@@ -188,17 +238,37 @@ class GameComponent extends Component {
                 </div>
 
 
-                {/* le conteneur de la barre de coté gauche */}
-                <div className="grid-container-space-around sidebar">
+                {/* le conteneur de la barre de coté gauche grid-container-space-around  */}
+                <div className="sidebar">
 
+                    <div class ="game-control-container">
 
-                    <div className ="grid-item grid-item-dice-container-styles">
+                        <div className ="grid-item grid-item-dice-container-styles">
 
-                        <Die setPlayerPos = {this.setPlayerPos} playerName={this.props.userName} />
+                            <Die setPlayerPos = {this.setPlayerPos} playerName={this.props.userName} />
+
+                        </div>
+                        
+                        <ActionButton> <span> Buy </span> </ActionButton>
+                        <ActionButton> <span> Trade </span> </ActionButton>
+                        <ActionButton> <span> Build </span> </ActionButton>
+                        <ActionButton> <span> Mortgage </span> </ActionButton>
+
 
                     </div>
 
-                
+
+                    <div className="game-state-container">
+
+
+                        <div className="player-cards-container">
+                            
+
+                        </div>
+                        
+                        <ActionButton onClick={this.setReady}> <span> Ready </span> </ActionButton>
+
+                    </div>
 
                 </div>
 

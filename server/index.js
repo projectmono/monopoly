@@ -16,19 +16,24 @@ httpServer.listen(port, function(){ console.log("Server has started on port : " 
 
 // Code from Socket.io official documentation ends here
 
-
 const {createRoom, joinRoom} = require('./rooms');
+
 
 
 io.on('connection', function(socket){
 
+
+    let gameOn = false;
+    let countDown = 0;
+
     console.log(`user ${socket.id} connected`);
-    let colors = ['blue', 'red', 'green', 'yellow', 'black', 'orange']
-    let roomsColors = {}
 
     // When a user tries to create a room, this event fires.
     socket.on('createRoomEvent', function(roomName, userName ,callback){
         
+        socket.data.ready = false;
+        socket.data.hasTurn = false;
+
         socket.data.username = userName;
         socket.data.position = 0;
         socket.data.money = 1500;
@@ -64,10 +69,15 @@ io.on('connection', function(socket){
     // When a user tries to join a room, this event fires
     socket.on('joinRoomEvent', function(roomName, userName ,callback){
         
-        
+
+        socket.data.ready = false;
+        socket.data.hasTurn = false;
         socket.data.username = userName;
         socket.data.position = 0;
         socket.data.money = 1500;
+
+
+
 
         roomNameOk =  joinRoom(io ,socket, roomName)
         
@@ -103,6 +113,59 @@ io.on('connection', function(socket){
 
     })
 
+    socket.on("ready", function(){
+
+    
+        let room = Array.from(socket.rooms)[1];
+
+        const players = io.sockets.adapter.rooms.get(room);
+
+        playersArray = [...players];
+        
+    if ( !socket.data.ready ){
+
+    socket.data.ready = true;
+
+        if ( io.sockets.adapter.rooms.get(room).size >= 2){
+        
+
+            for ( x of playersArray ){
+
+                if ( !io.sockets.sockets.get(x).data.ready ){
+                    return;
+                }
+
+            }
+
+            io.to(room).emit("gameStart");
+
+            io.sockets.sockets.get(playersArray[0]).data.hasTurn = 1;
+
+            let currentPlayer = 0;
+
+            setInterval(function() {
+
+                countDown++;
+                console.log("Count : " + countDown);
+                if ( !(countDown % 60) ){
+
+                    io.sockets.sockets.get( playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.hasTurn = 0;
+                    currentPlayer++;
+                    io.sockets.sockets.get( playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.hasTurn = 1;
+                    socket.emit("playerHasTurn", io.sockets.sockets.get( playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username);
+
+                    console.log("Turn for : " + io.sockets.sockets.get( playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username);
+                }
+
+
+            } , 100);
+
+        }
+    }    
+
+        
+
+    })
 
     socket.on('disconnect', function(){
 

@@ -22,7 +22,7 @@
 
 .hcard{
 
-    @include grid-container-mixin(center, center stretch, 16% 84%, 50% 50%);
+    @include grid-container-mixin(center, center stretch, 16% 84%, 25% 50% 25%);
     border-right: solid;
     border-top: solid;
     box-sizing: border-box;
@@ -38,25 +38,19 @@
     width : 100%;
 }
 
-
-.title-span{
-
-    font-size: 1.3vh;
-    text-align: center;
-}
-
 .price-span{
 
     height : 100%;
     font-size : 1.5vh;
     text-align: center;
+    margin-bottom : 7px;
 
 }
 
 
 .color-banner-hr{
 
-    grid-row: span 2;
+    grid-row: span 3;
     height : 100%;
     border-right: solid;
 
@@ -64,7 +58,7 @@
 
 .color-banner-hl{
 
-    grid-row: span 2;
+    grid-row: span 3;
     height : 100%;
     border-left: solid;
 }
