@@ -96,15 +96,13 @@ class GameComponent extends Component {
 
             let players = {...this.state.players};
 
-            console.log("roll : " + roll);
-
             for (let i = 1; i <= roll; i++ ){
 
                 players[userName].position = ( players[userName].position + 1 ) % 40;
                 this.setState((state) => ({ players : state.players } ));
 
             }
-
+            
             console.log(this.state.players[userName].position);
             
 

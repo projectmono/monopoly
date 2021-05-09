@@ -193,7 +193,7 @@ export default class Login extends Component {
 
                     <div className="grid-item span-columns">
 
-                        <input className ="input-styles" type="text" value={"Room1"} placeholder="Room Name" onChange={this.setRoom}/>
+                        <input className ="input-styles" type="text" value={this.state.roomName} placeholder="Room Name" onChange={this.setRoom}/>
 
                     </div>
 
