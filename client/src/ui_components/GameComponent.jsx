@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import Board from './Board.jsx'
 import './styles/GameComponentStyles.scss'
-import Card from './Card.jsx'
 import Opponent from './Opponent.jsx'
+import PropertyCard from './PropertyCard'
 import Die from './Die'
 import './styles/Global.scss'
 import './styles/Die.scss'
+import './styles/Card.scss'
 import socket from "../connections_components/socket_config";
 import styled from 'styled-components'
 
@@ -21,6 +22,7 @@ const ActionButton = styled.button`
     font-family : "Trocchi";
     font-size : 1.5rem;
     transition-duration: 0.4s;
+    margin : 10px;
     &:hover{
 
         background-color : #8e5ccc;
@@ -29,10 +31,14 @@ const ActionButton = styled.button`
 
 `
 
+const CardButton = styled.button`
 
+    width : 85%;
+    height : 20%;
+    background-color: ${props => props.color};
+    text-align: center;
 
-
-
+`
 
 /* C'est le composant principale qui englobe la totalité de l'interface et la logique front-end du jeu */
 class GameComponent extends Component {
@@ -41,7 +47,7 @@ class GameComponent extends Component {
         super(props)
     
         this.state = {
-            players : {},
+            players : {}, board : {}
         }
 
         this.eventHandler = this.eventHandler.bind(this);
@@ -79,6 +85,21 @@ class GameComponent extends Component {
     eventHandler(){
 
 
+        socket.on("board", function(board){
+
+            this.setState({
+
+                board : board
+
+            }, () => {
+               console.log(this.state.board);
+            })
+
+        }.bind(this))
+
+
+
+        // Un joueur vient de rejondre la partie
         socket.on("playerJoined", function(players, callback){
 
             let playersCopy = this.assignColors(players)
@@ -91,7 +112,7 @@ class GameComponent extends Component {
 
         }.bind(this))
 
-
+        // Un lancé de dé a été effectué
         socket.on("diceRoll", function(roll, userName){
 
             let players = {...this.state.players};
@@ -109,7 +130,7 @@ class GameComponent extends Component {
         }.bind(this))
 
 
-
+        // ???
         socket.on("gameStart", function(callback){
 
 
@@ -118,6 +139,7 @@ class GameComponent extends Component {
 
         }.bind(this))
 
+        // Le tour d'un joueur vient de commencer
         socket.on("playerHasTurn", function(userName){
 
 
@@ -125,6 +147,46 @@ class GameComponent extends Component {
 
 
         })
+
+        // Un joueur vient d'acheter une propriété
+        socket.on("propertyBought", function(money, board){
+
+            let playersCopy = {...this.state.players};
+            playersCopy[this.props.userName].money = money;
+
+            this.setState({
+
+                players : playersCopy,
+                board : board
+
+            })
+
+        }.bind(this))
+
+
+
+
+    }
+
+    setProperty(){
+
+
+        if ( Object.entries(this.state.board).length == 0 ){
+
+            return;
+
+        }
+
+        return (Object.keys(this.state.board.territories).map(territory => {
+
+            if ( this.state.board.territories[territory].ownedBy == this.props.userName ){
+                
+                return <CardButton color = {this.state.board.territories[territory].color}>{this.state.board.territories[territory].name}</CardButton>
+
+            }
+
+        })
+        )
 
     }
 
@@ -195,6 +257,18 @@ class GameComponent extends Component {
 
     }
 
+    buyProperty(){
+
+        socket.emit("buy");
+
+    }
+
+    buildProperty(){
+
+        socket.emit("buildEvent");
+
+    }
+
     render(){
 
 
@@ -206,7 +280,7 @@ class GameComponent extends Component {
                 
 
                 {/* le conteneur de la barre de coté gauche */}
-                <div className="sidebar">
+                <div className="left-sidebar">
                     
                     
 
@@ -215,7 +289,7 @@ class GameComponent extends Component {
 
                             {Object.keys(this.state.players).map(player => 
 
-                                <Opponent player = {player} color = {this.state.players[player].color}/>
+                                <Opponent player = {player} color = {this.state.players[player].color} money={this.state.players[player].money}/>
 
                             )}
 
@@ -237,7 +311,7 @@ class GameComponent extends Component {
 
 
                 {/* le conteneur de la barre de coté gauche grid-container-space-around  */}
-                <div className="sidebar">
+                <div className="right-sidebar">
 
                     <div class ="game-control-container">
 
@@ -247,11 +321,10 @@ class GameComponent extends Component {
 
                         </div>
                         
-                        <ActionButton> <span> Buy </span> </ActionButton>
+                        <ActionButton onClick={this.buyProperty}> <span> Buy </span> </ActionButton>
                         <ActionButton> <span> Trade </span> </ActionButton>
                         <ActionButton> <span> Build </span> </ActionButton>
                         <ActionButton> <span> Mortgage </span> </ActionButton>
-
 
                     </div>
 
@@ -259,13 +332,13 @@ class GameComponent extends Component {
                     <div className="game-state-container">
 
 
-                        <div className="player-cards-container">
-                            
-
-                        </div>
+                        {this.setProperty()}
                         
-                        <ActionButton onClick={this.setReady}> <span> Ready </span> </ActionButton>
 
+                    </div>
+                    
+                    <div class="party-controls-container">
+                        <ActionButton onClick={this.setReady}> <span> Ready </span> </ActionButton>
                     </div>
 
                 </div>

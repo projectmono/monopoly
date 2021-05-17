@@ -6,7 +6,7 @@
     width : 100%;
 }
 
-.sidebar{
+.left-sidebar{
 
     @include grid-container-mixin(space-around, center, 100%, 48% 48%);
     height : 98vh;
@@ -14,6 +14,17 @@
     background-color: #c0c7ef;
 
 }
+
+.right-sidebar{
+
+    @include grid-container-mixin(space-around, center, 100%, 30% 40% 30%);
+    height : 98vh;
+    width : 60%;
+    background-color: #c0c7ef;
+
+}
+
+
 
 .grid-item-dice-container-styles{
 
@@ -50,22 +61,32 @@
 
     @include grid-container-mixin(start center, center, 48% 48%);
     width : 100%;
-    height : 100%;
+    height : auto
 }
 
 .game-state-container{
 
-    @include grid-container-mixin(end center, center, 100%);
-    width : 100%;
+    @include grid-container-mixin(start center, center, 48% 48%, repeat(13, 48%));
     height : 100%;
+    width : 100%;
+    background-color: #6f4cc0;
+    overflow: scroll;
 
 }
 
-.player-cards-container{
+
+.party-controls-container{
 
     @include grid-container-mixin(end center, center, 100%);
-    width : 100%;
     height : 100%;
-    background-color : purple;
+    width : 100%;
+}
+
+.title{
+
+    width : 85%;
+    height : 20%;
+    background-color: blue;
+    text-align: center;
 
 }

@@ -56,7 +56,7 @@ class Opponent extends Component{
                         <div className="player-money">
 
                             <span>
-                                1500$
+                                {this.props.money}
                             </span>
 
                         </div>
