@@ -13,7 +13,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "mortgageValue" : null,
-            "color" : null
+            "color" : null,
+            "groupe" : []
         },
 
         {
@@ -42,7 +43,8 @@ let board = {
             "housecost" : null,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : null
+            "color" : null,
+            "groupe" : []
         },
 
         {
@@ -72,7 +74,8 @@ let board = {
             "housecost" : null,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : "#854b37"
+            "color" : "#854b37",
+            "groupe" : []
         },
 
         {
@@ -119,7 +122,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "mortgageValue" : null,
-            "color" : "#854b37"
+            "color" : "#854b37",
+            "groupe" : []
         },
 
         {
@@ -167,7 +171,8 @@ let board = {
             "mortgageValue" : null,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : "#854b37"
+            "color" : "#854b37",
+            "groupe" : []
         },
 
         {
@@ -279,7 +284,8 @@ let board = {
             "mortgageValue" : null,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : "#854b37"
+            "color" : "#854b37",
+            "groupe" : []
         },
 
         {
@@ -327,7 +333,8 @@ let board = {
             "mortgageValue" : null,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : "#854b37"
+            "color" : "#854b37",
+            "groupe" : []
         },
 
         {
@@ -358,7 +365,8 @@ let board = {
             "mortgageValue" : null,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : "#854b37"
+            "color" : "#854b37",
+            "groupe" : []
         },
 
         {
@@ -439,7 +447,8 @@ let board = {
             "mortgageValue" : 130,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : "#fef102"
+            "color" : "#fef102",
+            "groupe" : []
         },
 
         {
@@ -487,7 +496,8 @@ let board = {
             "mortgageValue" : 60,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : "#854b37"
+            "color" : "#854b37",
+            "groupe" : []
         },
 
         {   
@@ -535,7 +545,8 @@ let board = {
             "mortgageValue" : null,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : "#854b37"
+            "color" : "#854b37",
+            "groupe" : []
         },
 
         {
@@ -582,7 +593,8 @@ let board = {
             "mortgageValue" : null,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : "#854b37"
+            "color" : "#854b37",
+            "groupe" : []
         },
 
         {
@@ -613,7 +625,8 @@ let board = {
             "mortgageValue" : null,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : "#854b37"
+            "color" : "#854b37",
+            "groupe" : []
         },
 
         {

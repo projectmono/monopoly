@@ -90,3 +90,28 @@
     text-align: center;
 
 }
+
+.property-container{
+
+    display : flex;
+    flex-direction: row;
+    height : 100%;
+    justify-content: space-around;
+}
+
+
+.house-shape{
+
+    height : 80%;
+    width : 23%;
+    background-color: black;
+    border-radius: 50%;
+}
+
+.hotel-shape{
+
+    height : 80%;
+    width : 22%;
+    background-color: black;
+
+}

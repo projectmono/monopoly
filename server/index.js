@@ -145,7 +145,7 @@ io.on('connection', function(socket){
 
     socket.data.ready = true;
 
-        if ( io.sockets.adapter.rooms.get(room).size >= 2 ){
+        if ( io.sockets.adapter.rooms.get(room).size >= 1 ){
         
 
             for ( x of rooms[room].playersArray ){
@@ -177,7 +177,7 @@ io.on('connection', function(socket){
                 }
 
 
-            } , 1000);
+            } , 10);
 
         }
     }    
@@ -191,6 +191,14 @@ io.on('connection', function(socket){
         let position = socket.data.position;
 
         let room = Array.from(socket.rooms)[1];
+
+        // Si ce n'est pas le tour du joueur
+        if ( !socket.data.hasTurn ){
+
+            console.log("Not your turn");
+            return;
+
+        }
 
         // Si ce n'est pas un bien achetable
         if ( rooms[room].board.territories[position].type != "property" ){
@@ -230,9 +238,18 @@ io.on('connection', function(socket){
         let position = socket.data.position;
 
         let room = Array.from(socket.rooms)[1];
+
+        // Si ce n'est pas le tour du joueur
+        if ( !socket.data.hasTurn ){
+
+            console.log("Not your turn");
+            return;
+
+        }
         
         // If the player does not or cannot own the property or is not allowed to build yet
-        for ( x of rooms[room].board.territories[position].groupe ){
+
+        /*for ( x of rooms[room].board.territories[position].groupe ){
 
             if ( rooms[room].board.territories[x].ownedBy != socket.data.username ){
 
@@ -241,12 +258,20 @@ io.on('connection', function(socket){
 
             }
 
-        }
+        }*/
 
         // Check if player has enough money
         if ( socket.data.money < rooms[room].board.territories[position].housecost ){
 
             console.log("Not enough money");
+            return;
+
+        }
+
+        // If the player already has a hotel built
+        if ( rooms[room].board.territories[position].hotels ){
+
+            console.log("Already at maximum capacity");
             return;
 
         }
@@ -257,16 +282,19 @@ io.on('connection', function(socket){
             socket.data.money = socket.data.money - rooms[room].board.territories[position].housecost;
             rooms[room].board.territories[position].houses = 0; 
             rooms[room].board.territories[position].hotels = 1;
-            
+            console.log("Hotel Property Built");
         }
         else {
 
             socket.data.money = socket.data.money - rooms[room].board.territories[position].housecost;
             rooms[room].board.territories[position].houses = rooms[room].board.territories[position].houses + 1 ; 
+            console.log("House property built");
 
         }
 
+        
         socket.emit("builtProperty", socket.data.money,rooms[room].board);
+
 
         // What's keeping the player from building a lot of hotels ? Like, a LOT.
 

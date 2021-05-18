@@ -29,14 +29,17 @@ const ActionButton = styled.button`
     
     }
 
+
 `
 
 const CardButton = styled.button`
 
     width : 85%;
-    height : 20%;
+    height : 30%;
     background-color: ${props => props.color};
     text-align: center;
+    display : grid;
+    grid-template-rows : 40% 60%;
 
 `
 
@@ -52,6 +55,7 @@ class GameComponent extends Component {
 
         this.eventHandler = this.eventHandler.bind(this);
         this.assignColors = this.assignColors.bind(this);
+        this.renderProperties = this.renderProperties.bind(this);
 
     }
 
@@ -163,6 +167,21 @@ class GameComponent extends Component {
 
         }.bind(this))
 
+        // Un joueur veut construire une maison ou un hotel
+        socket.on("builtProperty", function(money, board){ 
+
+            let playersCopy = {...this.state.players};
+            playersCopy[this.props.userName].money = money;
+
+            this.setState({
+
+                players : playersCopy,
+                board : board
+
+            })
+
+        }.bind(this))
+
 
 
 
@@ -181,12 +200,48 @@ class GameComponent extends Component {
 
             if ( this.state.board.territories[territory].ownedBy == this.props.userName ){
                 
-                return <CardButton color = {this.state.board.territories[territory].color}>{this.state.board.territories[territory].name}</CardButton>
+                return (<CardButton color = {this.state.board.territories[territory].color}>
+                    
+                    {this.state.board.territories[territory].name}
+                    <div class="property-container">
+
+                        {this.state.board.territories[territory].type =="property" ? this.renderProperties(territory).map(
+
+                            property => property
+
+                        ) : ""}
+
+                    </div> 
+                
+                </CardButton>)
 
             }
 
         })
         )
+
+    }
+
+    renderProperties(territory){
+
+        let properties = [];
+
+        if ( this.state.board.territories[territory].houses ){
+                                
+            for (let i = 0; i < this.state.board.territories[territory].houses; i++ ){
+
+                properties.push(<div class="house-shape"> </div>);
+
+            }
+
+        }
+        else if ( this.state.board.territories[territory].hotels ){
+
+            properties.push(<div class="hotel-shape"> </div>);
+
+        }
+
+        return properties;
 
     }
 
@@ -323,7 +378,7 @@ class GameComponent extends Component {
                         
                         <ActionButton onClick={this.buyProperty}> <span> Buy </span> </ActionButton>
                         <ActionButton> <span> Trade </span> </ActionButton>
-                        <ActionButton> <span> Build </span> </ActionButton>
+                        <ActionButton> <span onClick={this.buildProperty}> Build </span> </ActionButton>
                         <ActionButton> <span> Mortgage </span> </ActionButton>
 
                     </div>
