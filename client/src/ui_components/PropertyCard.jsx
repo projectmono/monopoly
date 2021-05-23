@@ -1,33 +1,34 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import './styles/Card.scss'
+import { ActionButton } from './styles/Card_Styles' 
 
 
 const TitleArea = styled.div`
 
+    display : flex;
     width : 100%;
     height : 20%;
     background-color : ${props => props.color};
-    text-align : center;
+    justify-content : center;
+    align-items : center;
+    font-size : 1.3rem;
+    color : white;
 
 `
 
 const RentArea = styled.div`
 
     display : grid;
-    grid-template-columns : 100;
-    //grid-template-rows : repeat(6, 15%) 10%;
+    grid-template-columns : 100%;
     width : 100%;
     height : 80%;
-    background-color : ${props => props.color};
     text-align : center;
-    font-size : 10px;
-
+    font-size : 1.1rem;
+    align-content : space-around;
 `
 
 export default class PropertyCard extends Component {
-
-
 
 
     render() {
@@ -36,19 +37,22 @@ export default class PropertyCard extends Component {
 
             <div class="property-card-container">
                 
-                    <TitleArea color="blue"> <b>Yeah</b> </TitleArea>
-                    <RentArea color="yellow">
+                    <TitleArea color={this.props.color}> <b> {this.props.title} </b> </TitleArea>
+                    <RentArea>
                         
-                        <span> Base Rent : 50 </span>
-                        <span> 1 House : 200 </span>
-                        <span> 2 Houses : 600 </span>
-                        <span> 3 Houses : 1400 </span>
-                        <span> 4 Houses : 1700 </span>
-                        <span> Hotel : 2000 </span>
-                        
+                        <div> Normal Rent : {this.props.board["territories"][this.props.position].rent} </div>
+                        {Object.keys(this.props.board["territories"][this.props.position].multipliedRent).map(index => {
+                            
+                            return <div> {index == 4 ? "Hotel Rent : " + this.props.board["territories"][this.props.position].multipliedRent[index] : (parseInt(index)+1) + " Houses Rent : " + this.props.board["territories"][this.props.position].multipliedRent[index]  } </div>
 
+                        })}
+
+                        <div >Building cost : {this.props.board["territories"][this.props.position].housecost}. Adding a Hotel will cost money and 4 houses</div>
+
+                        {this.props.board["territories"][this.props.position].isMortgaged ? <ActionButton onClick={() => {this.props.demortgageProperty(this.props.position)}}> Demortgage For : {this.props.board["territories"][this.props.position].mortgageValue}</ActionButton> :  <ActionButton onClick={() => {this.props.mortgageProperty(this.props.position)}}> Mortgage For : {this.props.board["territories"][this.props.position].mortgageValue}</ActionButton>}
 
                     </RentArea>
+                    
 
             </div>
 

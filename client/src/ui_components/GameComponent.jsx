@@ -9,28 +9,10 @@ import './styles/Die.scss'
 import './styles/Card.scss'
 import socket from "../connections_components/socket_config";
 import styled from 'styled-components'
+import Modal from 'react-modal';
+import { ActionButton } from './styles/Card_Styles' 
 
 
-const ActionButton = styled.button`
-
-    width : 90%;
-    height : 5rem;
-    background-color : #A994C3;
-    margin-top : 1rem;
-    border : 0;
-    border-radius : 3%;
-    font-family : "Trocchi";
-    font-size : 1.5rem;
-    transition-duration: 0.4s;
-    margin : 10px;
-    &:hover{
-
-        background-color : #8e5ccc;
-    
-    }
-
-
-`
 
 const CardButton = styled.button`
 
@@ -117,9 +99,11 @@ class GameComponent extends Component {
         }.bind(this))
 
         // Un lancé de dé a été effectué
-        socket.on("diceRoll", function(roll, userName){
+        socket.on("diceRoll", function(roll, userName, money){
 
             let players = {...this.state.players};
+
+            players[userName].money = money;
 
             for (let i = 1; i <= roll; i++ ){
 
@@ -134,7 +118,7 @@ class GameComponent extends Component {
         }.bind(this))
 
 
-        // ???
+        // Game is on
         socket.on("gameStart", function(callback){
 
 
@@ -153,10 +137,10 @@ class GameComponent extends Component {
         })
 
         // Un joueur vient d'acheter une propriété
-        socket.on("propertyBought", function(money, board){
+        socket.on("propertyBought", function(money, board, username){
 
             let playersCopy = {...this.state.players};
-            playersCopy[this.props.userName].money = money;
+            playersCopy[username].money = money;
 
             this.setState({
 
@@ -182,6 +166,78 @@ class GameComponent extends Component {
 
         }.bind(this))
 
+        // Un jouer mortgaged une propriété
+        socket.on("propertyMortgaged", function(money, board){
+
+            let playersCopy = {...this.state.players};
+            playersCopy[this.props.userName].money = money;
+
+            this.setState({
+
+                players : playersCopy,
+                board : board
+
+            })
+
+        }.bind(this))
+
+
+        socket.on("propertyDemortgaged", function(money, board){
+
+            let playersCopy = {...this.state.players};
+            playersCopy[this.props.userName].money = money;
+
+            this.setState({
+
+                players : playersCopy,
+                board : board
+
+            })
+
+        }.bind(this))
+
+        socket.on("rentPaid", function(username, paidmoney, username2, money){
+
+            let playersCopy = {...this.state.players};
+            playersCopy[username].money = paidmoney;
+            playersCopy[username2].money = money;
+
+            this.setState({
+
+                players : playersCopy
+
+            })
+
+
+        }.bind(this))
+
+        socket.on("taxPaid", function(username, money){
+
+            let playersCopy = {...this.state.players};
+            playersCopy[username].money = money
+
+            this.setState({
+
+                players : playersCopy
+
+            })
+
+        }.bind(this))
+
+        socket.on("wentToPrison", function(username, position, jailCountdown){
+
+            let playersCopy = {...this.state.players};
+            playersCopy[username].position = position;
+            playersCopy[username].jailCountdown = jailCountdown;
+
+            this.setState({
+
+                players : playersCopy
+
+            })
+
+        }.bind(this))
+
 
 
 
@@ -200,7 +256,7 @@ class GameComponent extends Component {
 
             if ( this.state.board.territories[territory].ownedBy == this.props.userName ){
                 
-                return (<CardButton color = {this.state.board.territories[territory].color}>
+                return (<CardButton color = {this.state.board.territories[territory].color} onClick={() => { this.setModal(this.state.board.territories[territory].position)}}>
                     
                     {this.state.board.territories[territory].name}
                     <div class="property-container">
@@ -221,6 +277,58 @@ class GameComponent extends Component {
         )
 
     }
+
+
+    setModal(position){
+
+        let boardCopy = {...this.state.board};
+        this.state.board["territories"].forEach(territory => {
+
+            territory.isOpen = false;
+
+        })
+
+        boardCopy.territories[position].isOpen = true;
+
+        this.setState({
+
+            board : boardCopy
+        }, console.log(this.state.board["territories"][position]))
+
+    }
+
+    renderModal(){
+
+        // If the board is empty, just return
+        if ( Object.entries(this.state.board).length == 0 ){
+
+            return;
+
+        }
+
+        for (const territory of this.state.board["territories"]){
+
+            if (territory.isOpen){
+
+                return (<Modal style={{
+                    content :{
+                        height : '50%',
+                        width : '15%',
+                        margin : 'auto'
+                    }
+
+                }} isOpen={true}>
+
+                    <PropertyCard color={territory.color} title={territory.name} position={territory.position} board={this.state.board} mortgageProperty={this.mortgageProperty} demortgageProperty={this.demortgageProperty}></PropertyCard>
+
+                </Modal>)
+
+            }
+        }
+        
+
+    }
+
 
     renderProperties(territory){
 
@@ -324,6 +432,18 @@ class GameComponent extends Component {
 
     }
 
+    mortgageProperty(position){
+
+        socket.emit("mortgageEvent", position);
+        
+    }
+
+    demortgageProperty(position){
+
+        socket.emit("demortgageEvent", position);
+
+    }
+
     render(){
 
 
@@ -398,7 +518,7 @@ class GameComponent extends Component {
 
                 </div>
 
-
+                {this.renderModal()}
                 
             </div>
 

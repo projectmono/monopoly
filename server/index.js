@@ -34,6 +34,9 @@ io.on('connection', function(socket){
 
         socket.data.ready = false;
         socket.data.hasTurn = false;
+        socket.data.hasRolled = false;
+        socket.data.hasLost = false;
+        socket.data.jailCountdown = 0;
         socket.data.username = userName;
         socket.data.position = 0;
         socket.data.money = 1500;
@@ -50,11 +53,11 @@ io.on('connection', function(socket){
             
             let roomBoard = {...board};
 
-            let game = { board : roomBoard, countdown : 0, playersArray : null }
+            let game = { board : roomBoard, countdown : 0, playersArray : null}
             rooms[roomName] = game;
 
             let playersMap = {}
-            let player = { position : socket.data.position, money : socket.data.money };
+            let player = { position : socket.data.position, money : socket.data.money, hasLost : false, jailCountdown : 0};
 
             const players = io.sockets.adapter.rooms.get(roomName);
             players.forEach(x => { 
@@ -79,6 +82,8 @@ io.on('connection', function(socket){
         socket.data.ready = false;
         socket.data.hasTurn = false;
         socket.data.hasRolled = false;
+        socket.data.hasLost = false;
+        socket.data.jailCountdown = 0;
         socket.data.username = userName;
         socket.data.position = 0;
         socket.data.money = 1500;
@@ -100,7 +105,7 @@ io.on('connection', function(socket){
             rooms[roomName] = game;
             
             let playersMap = {}
-            let player = { position : socket.data.position, money : socket.data.money };
+            let player = { position : socket.data.position, money : socket.data.money, hasLost : false, jailCountdown : 0 };
             const players = io.sockets.adapter.rooms.get(roomName);
             players.forEach(x => { 
                 
@@ -117,14 +122,110 @@ io.on('connection', function(socket){
     // Dice roll
     socket.on("rollDice", function(playerName){
 
-        if ( socket.data.hasTurn && !socket.data.hasRolled ){
+        let room = Array.from(socket.rooms)[1];
+        const players = io.sockets.adapter.rooms.get(room);
+        if ( socket.data.hasTurn && !socket.data.hasRolled && socket.data.jailCountdown == 0){
 
-            let room = Array.from(socket.rooms)[1];
+            // Updating position
             let randomValue = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
+
+            // Maybe getting cash
+            if ( socket.data.position > (( socket.data.position + randomValue ) % 40) ){
+
+                socket.data.money = socket.data.money + 200;
+
+            }
+
             socket.data.position = ( socket.data.position + randomValue ) % 40;
             socket.data.hasRolled = true;
-            io.to(room).emit("diceRoll", randomValue, socket.data.username);
+            io.to(room).emit("diceRoll", randomValue, socket.data.username, socket.data.money);
 
+            // New position obligation
+            if ( rooms[room].board.territories[socket.data.position].type == "property" ){
+
+                // Check if it is owned by anybody
+                if ( rooms[room].board.territories[socket.data.position].ownedBy && rooms[room].board.territories[socket.data.position].ownedBy != socket.data.username ){
+                   console.log("i get here\n"); players.forEach(x => {
+
+                        if ( io.sockets.sockets.get(x).data.username == rooms[room].board.territories[socket.data.position].ownedBy){
+
+                            if ( rooms[room].board.territories[socket.data.position].houses ){
+
+                                socket.data.money = socket.data.money - rooms[room].board.territories[socket.data.position].multipliedRent[rooms[room].board.territories[socket.data.position].houses - 1];
+                                io.sockets.sockets.get(x).data.money = io.sockets.sockets.get(x).data.money + rooms[room].board.territories[socket.data.position].multipliedRent[rooms[room].board.territories[socket.data.position].houses - 1];
+
+                            }
+                            else if ( rooms[room].board.territories[socket.data.position].hotels ){
+
+                                socket.data.money = socket.data.money - rooms[room].board.territories[socket.data.position].multipliedRent[4];
+                                io.sockets.sockets.get(x).data.money = io.sockets.sockets.get(x).data.money + rooms[room].board.territories[socket.data.position].multipliedRent[4];
+
+                            }
+                            else{
+
+                                io.sockets.sockets.get(x).data.money = io.sockets.sockets.get(x).data.money + rooms[room].board.territories[socket.data.position].rent
+                                socket.data.money = socket.data.money - rooms[room].board.territories[socket.data.position].rent
+                                
+                            }
+
+                            console.log("Player paid rent");
+                            io.to(room).emit("rentPaid", io.sockets.sockets.get(x).data.username, io.sockets.sockets.get(x).data.money, socket.data.username, socket.data.money);
+
+                        }
+
+                    })
+                    
+
+                }
+
+            }
+
+            console.log(socket.data.position);
+            if ( rooms[room].board.territories[socket.data.position].type == "incomeTax" ){
+
+                console.log("Player paid tax\n");
+                socket.data.money = socket.data.money - 200;
+                io.to(room).emit("taxPaid", socket.data.username, socket.data.money);
+
+            } 
+
+            if ( rooms[room].board.territories[socket.data.position].type == "communityChest" ){
+
+                console.log("Community Chest");
+                
+            }
+
+            if ( rooms[room].board.territories[socket.data.position].type == "chance" ){
+
+                console.log("Chance");
+
+            }
+
+            if ( rooms[room].board.territories[socket.data.position].type == "electricCompany" ){
+
+                console.log("Electric Company");
+
+            }
+
+            if ( rooms[room].board.territories[socket.data.position].type == "waterworks" ){
+
+                console.log("Water Works");
+
+            }
+
+            if ( rooms[room].board.territories[socket.data.position].type == "goToJail"){
+
+                socket.data.position = 10;
+                socket.data.jailCountdown = 3;
+                io.to(room).emit("wentToPrison", socket.data.username, socket.data.position, socket.data.jailCountdown );
+                console.log("Player went to prison");
+
+            }
+
+        }
+        else{
+
+            console.log("Cannot move\n");
         }
 
     })
@@ -157,6 +258,7 @@ io.on('connection', function(socket){
             }
 
             io.to(room).emit("gameStart");
+            rooms[room].gameOn = true;
 
             io.sockets.sockets.get(rooms[room].playersArray[0]).data.hasTurn = 1;
 
@@ -167,17 +269,20 @@ io.on('connection', function(socket){
                 rooms[room].countdown = rooms[room].countdown + 1;
 
                 if ( !(rooms[room].countdown % 60) ){
-
+                    
                     io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.hasTurn = false;
                     io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.hasRolled = false;
+                    if(io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.jailCountdown){
+                        io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.jailCountdown--;
+                    }
                     currentPlayer++;
                     io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.hasTurn = true;
                     socket.emit("playerHasTurn", io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username);
-                    //console.log("Turn for : " + io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username + " in room " + room);
+                    console.log("Player has turn : " + io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username )
                 }
 
 
-            } , 10);
+            } , 100);
 
         }
     }    
@@ -192,6 +297,7 @@ io.on('connection', function(socket){
 
         let room = Array.from(socket.rooms)[1];
 
+        
         // Si ce n'est pas le tour du joueur
         if ( !socket.data.hasTurn ){
 
@@ -199,7 +305,7 @@ io.on('connection', function(socket){
             return;
 
         }
-
+        console.log(position);
         // Si ce n'est pas un bien achetable
         if ( rooms[room].board.territories[position].type != "property" ){
 
@@ -227,7 +333,7 @@ io.on('connection', function(socket){
 
         socket.data.money = socket.data.money - rooms[room].board.territories[position].price;
         rooms[room].board.territories[position].ownedBy = socket.data.username;
-        socket.emit("propertyBought", socket.data.money, rooms[room].board);
+        io.to(room).emit("propertyBought", socket.data.money, rooms[room].board, socket.data.username);
 
     })
 
@@ -296,8 +402,109 @@ io.on('connection', function(socket){
         socket.emit("builtProperty", socket.data.money,rooms[room].board);
 
 
-        // What's keeping the player from building a lot of hotels ? Like, a LOT.
 
+
+    })
+
+    socket.on('mortgageEvent', function(position){
+
+        let room = Array.from(socket.rooms)[1];
+
+        // Check if the property is owned by the player or not 
+        if ( rooms[room].board.territories[position].ownedBy != socket.data.username ){
+
+            console.log("Cannot mortgage this property, you don't own it or it's not ownable");
+            return;
+
+        }
+
+        // If the property is already mortgaged
+        if ( rooms[room].board.territories[position].isMortgaged ){
+
+            console.log("Property is already mortgaged");
+            return;
+
+        }
+
+        // Mortgaging
+        rooms[room].board.territories[position].isMortgaged = true;
+        socket.data.money = socket.data.money + rooms[room].board.territories[position].mortgageValue;
+
+        // Emitting new state
+        console.log("Property Mortgaged");
+        io.to(room).emit("propertyMortgaged", socket.data.money, rooms[room].board);
+        
+
+    })
+
+    socket.on("demortgageEvent", function(position){
+
+        // Get the room
+        let room = Array.from(socket.rooms)[1];
+
+        // Check if the property is owned by the player or not 
+        if ( rooms[room].board.territories[position].ownedBy != socket.data.username ){
+
+            console.log("Cannot demortgage this property, you don't own it or it's not ownable");
+            return;
+
+        }
+
+        // If the property is not mortgaged
+        if ( !(rooms[room].board.territories[position].isMortgaged) ){
+
+            console.log("Property is not mortgaged");
+            return;
+
+        }
+
+        // Check if player has enough money
+        if ( rooms[room].board.territories[position].mortgageValue > socket.data.money  ){
+
+            console.log("You don't have enough money");
+            return;
+
+        }
+
+        // Mortgaging
+        rooms[room].board.territories[position].isMortgaged = false;
+        socket.data.money = socket.data.money - rooms[room].board.territories[position].mortgageValue;
+
+        // Emitting new data
+        console.log("Property Demortgaged");
+        io.to(room).emit("propertyDemortgaged", socket.data.money, rooms[room].board);
+
+
+    })
+
+    socket.on('disconnecting', function(){
+
+        // Get the room
+        let room = Array.from(socket.rooms)[1];
+
+        // Recreate players map and emit it to all
+        let playersMap = {}
+            const players = io.sockets.adapter.rooms.get(room);
+            let player = { };
+            players.forEach(x => { 
+                
+                if ( socket.id != x ){
+                    console.log("I get here\n");
+                    player.position = io.sockets.sockets.get(x).data.position;
+                    player.money = io.sockets.sockets.get(x).data.money;
+                    player.hasLost = io.sockets.sockets.get(x).data.hasLost;
+                    player.jailCountdown = io.sockets.sockets.get(x).data.jailCountdown
+                    playersMap[io.sockets.sockets.get(x).data.username] = player
+                }
+            
+            })
+
+            let index = rooms[room].playersArray.indexOf(socket.id);
+            rooms[room].playersArray.splice(index, 1);
+            console.log("Player has quit");
+
+
+            io.to(room).emit("playerJoined", playersMap)
 
     })
 

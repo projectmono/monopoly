@@ -14,7 +14,8 @@ let board = {
             "isMortgaged" : null,
             "mortgageValue" : null,
             "color" : null,
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -27,10 +28,12 @@ let board = {
             "housecost" : 50,
             "ownedBy" : null,
             "isMortgaged" : null,
+            "mortgageValue" : 30,
             "color" : "#854b37",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [1,3]
+            "groupe" : [1,3],
+            "isOpen" : false
         },
 
         {
@@ -44,7 +47,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "color" : null,
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -61,7 +65,8 @@ let board = {
             "color" : "#854b37",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [1,3]
+            "groupe" : [1,3],
+            "isOpen" : false
         },
         
         {  
@@ -75,7 +80,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "color" : "#854b37",
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -92,6 +98,7 @@ let board = {
             "color" : "white",
             "houses" : 0,
             "hotels" : 0,
+            "isOpen" : false
         },
 
         {
@@ -108,7 +115,8 @@ let board = {
             "color" : "#abdbef",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [6,8,9]
+            "groupe" : [6,8,9],
+            "isOpen" : false
         },
 
         {
@@ -123,7 +131,8 @@ let board = {
             "isMortgaged" : null,
             "mortgageValue" : null,
             "color" : "#854b37",
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -140,7 +149,8 @@ let board = {
             "color" : "#abdbef",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [6,8,9]
+            "groupe" : [6,8,9],
+            "isOpen" : false
         },
 
         {
@@ -157,7 +167,8 @@ let board = {
             "color" : "#abdbef",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [6,8,9]
+            "groupe" : [6,8,9],
+            "isOpen" : false
         },
 
         {
@@ -172,7 +183,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "color" : "#854b37",
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -189,7 +201,8 @@ let board = {
             "color" : "#c53982",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [11,13,14]
+            "groupe" : [11,13,14],
+            "isOpen" : false
         },
 
         {
@@ -203,7 +216,8 @@ let board = {
             "mortgageValue" : null,
             "ownedBy" : null,
             "isMortgaged" : null,
-            "color" : "#854b37"
+            "color" : "#854b37",
+            "isOpen" : false
         },
 
         {
@@ -220,7 +234,8 @@ let board = {
             "color" : "#c53982",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [11,13,14]
+            "groupe" : [11,13,14],
+            "isOpen" : false
         },
 
         {
@@ -237,7 +252,8 @@ let board = {
             "color" : "#c53982",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [11,13,14]
+            "groupe" : [11,13,14],
+            "isOpen" : false
         },
 
         {
@@ -253,7 +269,8 @@ let board = {
             "isMortgaged" : null,
             "color" : "white",
             "houses" : 0,
-            "hotels" : 0
+            "hotels" : 0,
+            "isOpen" : false
         },
 
         {
@@ -270,7 +287,8 @@ let board = {
             "color" : "#e98b29",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [16,18,19]
+            "groupe" : [16,18,19],
+            "isOpen" : false
         },
 
         {
@@ -285,7 +303,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "color" : "#854b37",
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -302,7 +321,8 @@ let board = {
             "color" : "#e98b29",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [16,18,19]
+            "groupe" : [16,18,19],
+            "isOpen" : false
         },
 
         {
@@ -319,7 +339,8 @@ let board = {
             "color" : "#e98b29",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [16,18,19]
+            "groupe" : [16,18,19],
+            "isOpen" : false
         },
 
         {
@@ -334,7 +355,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "color" : "#854b37",
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -351,7 +373,8 @@ let board = {
             "color" : "#DA2327",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [21,23,24]
+            "groupe" : [21,23,24],
+            "isOpen" : false
         },
 
         {
@@ -366,7 +389,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "color" : "#854b37",
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -383,7 +407,8 @@ let board = {
             "color" : "#DA2327",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [21,23,24]
+            "groupe" : [21,23,24],
+            "isOpen" : false
         },
 
         {
@@ -400,7 +425,8 @@ let board = {
             "color" : "#DA2327",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [21,23,24]
+            "groupe" : [21,23,24],
+            "isOpen" : false
         },
 
         {
@@ -416,7 +442,8 @@ let board = {
             "isMortgaged" : null,
             "color" : "white",
             "houses" : 0,
-            "hotels" : 0
+            "hotels" : 0,
+            "isOpen" : false
         },
 
         {
@@ -433,13 +460,14 @@ let board = {
             "color" : "#fef102",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [26,28,29]
+            "groupe" : [26,28,29],
+            "isOpen" : false
         },
 
         {
             "name" : "Water Works",
             "position" : 27,
-            "type" : "waterwork",
+            "type" : "waterworks",
             "price" : 260,
             "rent" : 22,
             "multipliedRent" : [110,330,800,975,1150],
@@ -448,7 +476,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "color" : "#fef102",
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -465,7 +494,8 @@ let board = {
             "color" : "#854b37",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [26,28,29]
+            "groupe" : [26,28,29],
+            "isOpen" : false
         },
 
         {
@@ -482,7 +512,8 @@ let board = {
             "color" : "#fef102",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [26,28,29]
+            "groupe" : [26,28,29],
+            "isOpen" : false
         },
 
         {
@@ -497,7 +528,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "color" : "#854b37",
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {   
@@ -514,7 +546,8 @@ let board = {
             "color" : "green",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [31,32,34]
+            "groupe" : [31,32,34],
+            "isOpen" : false
         },
 
         {
@@ -531,7 +564,8 @@ let board = {
             "color" : "green",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [31,32,34]
+            "groupe" : [31,32,34],
+            "isOpen" : false
         },
 
         {
@@ -546,7 +580,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "color" : "#854b37",
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -563,7 +598,8 @@ let board = {
             "color" : "green",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [31,32,34]
+            "groupe" : [31,32,34],
+            "isOpen" : false
         },
 
         {
@@ -579,7 +615,8 @@ let board = {
             "isMortgaged" : null,
             "color" : "white",
             "houses" : 0,
-            "hotels" : 0
+            "hotels" : 0,
+            "isOpen" : false
         },
 
         {
@@ -594,7 +631,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "color" : "#854b37",
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -611,7 +649,8 @@ let board = {
             "color" : "#0065a3",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [37,39]
+            "groupe" : [37,39],
+            "isOpen" : false
         },
 
         {
@@ -626,7 +665,8 @@ let board = {
             "ownedBy" : null,
             "isMortgaged" : null,
             "color" : "#854b37",
-            "groupe" : []
+            "groupe" : [],
+            "isOpen" : false
         },
 
         {
@@ -643,7 +683,8 @@ let board = {
             "color" : "#0065a3",
             "houses" : 0,
             "hotels" : 0,
-            "groupe" : [37,39]
+            "groupe" : [37,39],
+            "isOpen" : false
         }
 
 
