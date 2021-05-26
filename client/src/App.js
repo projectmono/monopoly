@@ -2,7 +2,6 @@ import './App.css';
 import GameComponent from './ui_components/GameComponent'
 import Login from './ui_components/Login'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-import io from 'socket.io-client'
 import { Component } from 'react';
 
 class App extends Component {

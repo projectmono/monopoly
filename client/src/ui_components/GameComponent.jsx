@@ -11,7 +11,8 @@ import socket from "../connections_components/socket_config";
 import styled from 'styled-components'
 import Modal from 'react-modal';
 import { ActionButton } from './styles/Card_Styles' 
-
+import { Redirect } from 'react-router-dom'
+import io from 'socket.io-client'
 
 
 const CardButton = styled.button`
@@ -32,12 +33,17 @@ class GameComponent extends Component {
         super(props)
     
         this.state = {
-            players : {}, board : {}
+            players : {}, board : {}, log : [], redirect : false
         }
 
         this.eventHandler = this.eventHandler.bind(this);
         this.assignColors = this.assignColors.bind(this);
         this.renderProperties = this.renderProperties.bind(this);
+        this.playerLost = this.playerLost.bind(this);
+        this.playerWon = this.playerWon.bind(this);
+        this.playerWatching = this.playerWatching.bind(this);
+        this.playerQuitting = this.playerQuitting.bind(this);
+
 
     }
 
@@ -86,13 +92,15 @@ class GameComponent extends Component {
 
 
         // Un joueur vient de rejondre la partie
-        socket.on("playerJoined", function(players, callback){
+        socket.on("playerJoined", function(players, username ,callback){
 
             let playersCopy = this.assignColors(players)
-
+            let logCopy = [...this.state.log];
+            logCopy.unshift("Player " + username + " joined");
             this.setState({
 
-                players : playersCopy
+                players : playersCopy,
+                log : logCopy
 
             })
 
@@ -239,7 +247,145 @@ class GameComponent extends Component {
         }.bind(this))
 
 
+        socket.on("gameLost", function(username, board){
 
+            let playersCopy = {...this.state.players};
+            playersCopy[username].hasLost = true;
+
+            this.setState({
+
+                players : playersCopy,
+                board : board
+
+            })
+
+        }.bind(this))
+
+        socket.on("playerWatching", function(username){
+
+            let playersCopy = {...this.state.players};
+            playersCopy[username].isWatching = true;
+
+            this.setState({
+
+                players : playersCopy
+
+            })
+
+        }.bind(this))
+
+
+        socket.on("logMessage", function(log){
+
+            let logCopy = [...this.state.log];
+            logCopy.unshift(log);
+
+            this.setState({
+
+                log : logCopy
+
+            })
+
+
+        }.bind(this))
+
+        socket.on("gameWon", function(username){
+
+            let playersCopy = {...this.state.players};
+            playersCopy[username].hasWon = true;
+
+            this.setState({
+
+                players : playersCopy
+
+            })
+
+        }.bind(this))
+
+
+    }
+
+
+    playerLost(){
+
+        if ( Object.entries(this.state.players).length != 0 ){
+
+            if ( this.state.players[this.props.userName].hasLost && !this.state.players[this.props.userName].isWatching){
+
+                return (<Modal isOpen={true} style={{
+                    content :{
+                        height : '25%',
+                        width : '15%',
+                        margin : 'auto',
+                        textAlign : 'center',
+                    }
+
+                }}>
+
+                    <h1>You Have Lost</h1>
+                    <ActionButton onClick={this.playerWatching}> Continue Watching </ActionButton>
+                    <ActionButton onClick={this.playerQuitting}> Quit </ActionButton>
+
+                </Modal>)
+    
+            }
+    
+        }
+        
+        
+    }
+
+    playerWon(){
+
+        if ( Object.entries(this.state.players).length != 0 ){
+            if ( this.state.players[this.props.userName].hasWon ){
+
+ 
+
+                return (<Modal isOpen={true} style={{
+                    content :{
+                        height : '25%',
+                        width : '15%',
+                        margin : 'auto',
+                        textAlign : 'center',
+                    }
+
+                }}>
+
+                    <h1>You Have Won</h1>
+                    <ActionButton onClick={this.playerQuitting}> Quit </ActionButton>
+
+                </Modal>)
+    
+            }
+
+        }
+
+    }
+
+    playerWatching(){
+
+        socket.emit("watchingEvent");
+
+    }
+
+    playerQuitting(){
+
+        
+        this.setState({
+
+            redirect : true
+
+        })
+
+    }
+
+    redirect(){
+
+        if ( this.state.redirect ){
+            socket.emit("playerQuitting")
+            window.location.assign('/');
+        }
 
     }
 
@@ -472,6 +618,12 @@ class GameComponent extends Component {
 
                         <div className= "log-wrapper">
 
+                                {Object.keys(this.state.log).map(log => 
+
+                                    <div class="log-message"> {this.state.log[log]} </div>
+
+                                )}
+
 
                         </div>
 
@@ -519,13 +671,14 @@ class GameComponent extends Component {
                 </div>
 
                 {this.renderModal()}
+                {this.playerLost()}
+                {this.playerWon()}
+                {this.redirect()}
+                
                 
             </div>
 
         );
-
-
-
 
     }
 
@@ -535,3 +688,4 @@ class GameComponent extends Component {
 }
 
 export default GameComponent;
+//export default socket;

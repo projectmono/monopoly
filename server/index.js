@@ -11,7 +11,7 @@ options={
 
 const io = require("socket.io")(httpServer, options);
 
-const port = process.env.port || 2003;
+const port = process.env.port || 2500;
 
 httpServer.listen(port, function(){ console.log("Server has started on port : " + {port}.port)});
 
@@ -39,7 +39,7 @@ io.on('connection', function(socket){
         socket.data.jailCountdown = 0;
         socket.data.username = userName;
         socket.data.position = 0;
-        socket.data.money = 1500;
+        socket.data.money = 199;
 
         roomNameOk =  createRoom(io ,socket, roomName)
         
@@ -53,11 +53,11 @@ io.on('connection', function(socket){
             
             let roomBoard = {...board};
 
-            let game = { board : roomBoard, countdown : 0, playersArray : null}
+            let game = { board : roomBoard, countdown : 0, playersArray : null, gameOn : false, log : []}
             rooms[roomName] = game;
 
             let playersMap = {}
-            let player = { position : socket.data.position, money : socket.data.money, hasLost : false, jailCountdown : 0};
+            let player = { position : socket.data.position, money : socket.data.money, hasLost : false, jailCountdown : 0, isWatching : 0, hasWon : false};
 
             const players = io.sockets.adapter.rooms.get(roomName);
             players.forEach(x => { 
@@ -67,7 +67,7 @@ io.on('connection', function(socket){
             })
 
             socket.emit("board", board);
-            io.to(roomName).emit("playerJoined", playersMap)
+            io.to(roomName).emit("playerJoined", playersMap, socket.data.username)
 
         }
         
@@ -79,6 +79,19 @@ io.on('connection', function(socket){
     socket.on('joinRoomEvent', function(roomName, userName ,callback){
         
 
+        const players = io.sockets.adapter.rooms.get(roomName);
+
+        for ( const player of players ){
+
+            if ( !io.sockets.sockets.get(player).data.ready && players.size < 2 ){
+                break;
+            }
+
+            console.log("Game is already on");
+            return;
+        }
+
+
         socket.data.ready = false;
         socket.data.hasTurn = false;
         socket.data.hasRolled = false;
@@ -86,7 +99,7 @@ io.on('connection', function(socket){
         socket.data.jailCountdown = 0;
         socket.data.username = userName;
         socket.data.position = 0;
-        socket.data.money = 1500;
+        socket.data.money = 199;
 
 
         roomNameOk =  joinRoom(io ,socket, roomName)
@@ -101,18 +114,18 @@ io.on('connection', function(socket){
 
             let roomBoard = {...board};
 
-            let game = { board : roomBoard, countdown : 0, playersArray : null }
+            let game = { board : roomBoard, countdown : 0, playersArray : null, gameOn : false, log : []}
             rooms[roomName] = game;
             
             let playersMap = {}
-            let player = { position : socket.data.position, money : socket.data.money, hasLost : false, jailCountdown : 0 };
+            let player = { position : socket.data.position, money : socket.data.money, hasLost : false, jailCountdown : 0, isWatching : 0, hasWon : false };
             const players = io.sockets.adapter.rooms.get(roomName);
             players.forEach(x => { 
                 
                 playersMap[io.sockets.sockets.get(x).data.username] = player
             
             })
-            io.to(roomName).emit("playerJoined", playersMap)
+            io.to(roomName).emit("playerJoined", playersMap, socket.data.username)
 
         }
 
@@ -124,7 +137,7 @@ io.on('connection', function(socket){
 
         let room = Array.from(socket.rooms)[1];
         const players = io.sockets.adapter.rooms.get(room);
-        if ( socket.data.hasTurn && !socket.data.hasRolled && socket.data.jailCountdown == 0){
+        if ( socket.data.hasTurn && !socket.data.hasRolled && socket.data.jailCountdown == 0 && !socket.data.hasLost && !socket.data.isWatching){
 
             // Updating position
             let randomValue = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
@@ -132,7 +145,8 @@ io.on('connection', function(socket){
             // Maybe getting cash
             if ( socket.data.position > (( socket.data.position + randomValue ) % 40) ){
 
-                socket.data.money = socket.data.money + 200;
+                socket.data.money = socket.data.money - 200;
+                io.to(room).emit("logMessage", `Player ${socket.data.username} has gained 200 euros`);
 
             }
 
@@ -161,6 +175,22 @@ io.on('connection', function(socket){
                                 io.sockets.sockets.get(x).data.money = io.sockets.sockets.get(x).data.money + rooms[room].board.territories[socket.data.position].multipliedRent[4];
 
                             }
+                            else if ( rooms[room].board.territories[socket.data.position].type == "utility" ){
+
+                                if ( io.sockets.sockets.get(x).data.username == rooms[room].board.territories[12].ownedBy &&
+                                     io.sockets.sockets.get(x).data.username == rooms[room].board.territories[27].ownedBy ){
+
+                                    socket.data.money = socket.data.money - (10 *  randomValue );
+                                    io.sockets.sockets.get(x).data.money = io.sockets.sockets.get(x).data.money + socket.data.money - (10 *  randomValue );
+
+                                }
+                                else{
+
+                                    socket.data.money = socket.data.money - (4 *  randomValue );
+                                    io.sockets.sockets.get(x).data.money = io.sockets.sockets.get(x).data.money + socket.data.money - (4 *  randomValue );
+                                }
+                
+                            }
                             else{
 
                                 io.sockets.sockets.get(x).data.money = io.sockets.sockets.get(x).data.money + rooms[room].board.territories[socket.data.position].rent
@@ -168,7 +198,7 @@ io.on('connection', function(socket){
                                 
                             }
 
-                            console.log("Player paid rent");
+                            io.to(room).emit("logMessage", `Player ${socket.data.username} paid rent to player ${io.sockets.sockets.get(x).data.username}`);
                             io.to(room).emit("rentPaid", io.sockets.sockets.get(x).data.username, io.sockets.sockets.get(x).data.money, socket.data.username, socket.data.money);
 
                         }
@@ -183,7 +213,7 @@ io.on('connection', function(socket){
             console.log(socket.data.position);
             if ( rooms[room].board.territories[socket.data.position].type == "incomeTax" ){
 
-                console.log("Player paid tax\n");
+                io.to(room).emit("logMessage", `Player ${socket.data.username} paid 200 in taxes`)
                 socket.data.money = socket.data.money - 200;
                 io.to(room).emit("taxPaid", socket.data.username, socket.data.money);
 
@@ -201,31 +231,53 @@ io.on('connection', function(socket){
 
             }
 
-            if ( rooms[room].board.territories[socket.data.position].type == "electricCompany" ){
-
-                console.log("Electric Company");
-
-            }
-
-            if ( rooms[room].board.territories[socket.data.position].type == "waterworks" ){
-
-                console.log("Water Works");
-
-            }
-
             if ( rooms[room].board.territories[socket.data.position].type == "goToJail"){
 
                 socket.data.position = 10;
                 socket.data.jailCountdown = 3;
+                io.to(room).emit("logMessage", `Player ${socket.data.username} went to jail`)
                 io.to(room).emit("wentToPrison", socket.data.username, socket.data.position, socket.data.jailCountdown );
-                console.log("Player went to prison");
+
+            }
+
+            if ( rooms[room].board.territories[socket.data.position].type == "superTax" ){
+
+                socket.data.money = socket.data.money - 100;
+                io.to(room).emit("logMessage", `Player ${socket.data.username} paid 100 in Super Taxe`)
+                io.to(room).emit("taxPaid", socket.data.username, socket.data.money);
+
+            }
+
+            
+
+            if ( socket.data.money < 0 ){
+                                
+                socket.data.hasLost = true;
+                io.to(room).emit("logMessage", `Player ${socket.data.username} has lost`)
+
+                for ( territory of rooms[room].board.territories ){
+                    if ( territory.ownedBy == socket.data.username ){
+
+                        territory.ownedBy = null;
+                        territory.isMortgaged = null;
+                        territory.houses = 0;
+                        territory.hotels = 0;
+                        io.to(room).emit("logMessage", `${territory.name} has been released and is free to be purchased`)
+
+                    }
+
+                }
+
+
+                io.to(room).emit("gameLost", socket.data.username, rooms[room].board);
 
             }
 
         }
         else{
 
-            console.log("Cannot move\n");
+            console.log("Unauthorized Mouvement\n");
+
         }
 
     })
@@ -245,10 +297,10 @@ io.on('connection', function(socket){
     if ( !socket.data.ready ){
 
     socket.data.ready = true;
+    io.to(room).emit("logMessage", `Player ${socket.data.username} is ready`)
 
         if ( io.sockets.adapter.rooms.get(room).size >= 1 ){
         
-
             for ( x of rooms[room].playersArray ){
 
                 if ( !io.sockets.sockets.get(x).data.ready ){
@@ -257,6 +309,7 @@ io.on('connection', function(socket){
 
             }
 
+            io.to(room).emit("logMessage", `The game has started`)
             io.to(room).emit("gameStart");
             rooms[room].gameOn = true;
 
@@ -264,7 +317,7 @@ io.on('connection', function(socket){
 
             let currentPlayer = 0;
 
-            setInterval(function() {
+            let turns = setInterval(function() {
                 
                 rooms[room].countdown = rooms[room].countdown + 1;
 
@@ -272,17 +325,40 @@ io.on('connection', function(socket){
                     
                     io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.hasTurn = false;
                     io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.hasRolled = false;
-                    if(io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.jailCountdown){
-                        io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.jailCountdown--;
-                    }
+
                     currentPlayer++;
+
+                    // Si la partie est gagné
+                    console.log(rooms[room].playersArray.length)
+                    if ( rooms[room].playersArray.length == 1 ){
+
+                        io.to(room).emit("gameWon", io.sockets.sockets.get( rooms[room].playersArray[0]).data.username);
+                        io.to(room).emit("logMessage", `Player ${io.sockets.sockets.get( rooms[room].playersArray[0]).data.username} has won`);
+                        clearInterval(turns)
+
+                    }
+
+                    // Si le joueur a perdu
+                    while ( io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.hasLost || 
+                            io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.isWatching ){
+                        currentPlayer++;
+                    }
+
+                    // Est dans la prison
+                    while ( io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.jailCountdown){
+                        io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.jailCountdown--;
+                        currentPlayer++;
+                    }
+
+    
                     io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.hasTurn = true;
                     socket.emit("playerHasTurn", io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username);
-                    console.log("Player has turn : " + io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username )
+                    io.to(room).emit("logMessage", `Player's ${io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username} turn`)
+                    //console.log("Player has turn : " + io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username )
                 }
 
 
-            } , 100);
+            } , 10);
 
         }
     }    
@@ -297,19 +373,26 @@ io.on('connection', function(socket){
 
         let room = Array.from(socket.rooms)[1];
 
+        // Si le joueur à déjà perdu
+        if ( socket.data.isWatching || socket.data.hasLost ){
+
+            console.log("player have already lost");
+            return;
+
+        }
         
         // Si ce n'est pas le tour du joueur
         if ( !socket.data.hasTurn ){
 
-            console.log("Not your turn");
+            console.log("Not player turn");
             return;
 
         }
         console.log(position);
         // Si ce n'est pas un bien achetable
-        if ( rooms[room].board.territories[position].type != "property" ){
+        if ( rooms[room].board.territories[position].type != "property" && rooms[room].board.territories[position].type != "utility" ){
 
-            console.log("Not a property");
+            console.log("Cannot be bought");
             return;
 
         }
@@ -333,6 +416,8 @@ io.on('connection', function(socket){
 
         socket.data.money = socket.data.money - rooms[room].board.territories[position].price;
         rooms[room].board.territories[position].ownedBy = socket.data.username;
+        
+        io.to(room).emit("logMessage", `Player ${socket.data.username} has bought the property ${rooms[room].board.territories[position].name}`)
         io.to(room).emit("propertyBought", socket.data.money, rooms[room].board, socket.data.username);
 
     })
@@ -345,10 +430,27 @@ io.on('connection', function(socket){
 
         let room = Array.from(socket.rooms)[1];
 
+
+        // Si le joueur à déjà perdu
+        if ( socket.data.isWatching || socket.data.hasLost ){
+
+            console.log("You have already lost");
+            return;
+
+        }
+
         // Si ce n'est pas le tour du joueur
         if ( !socket.data.hasTurn ){
 
             console.log("Not your turn");
+            return;
+
+        }
+
+        // Check if the property is buildable 
+        if ( rooms[room].board.territories[position].housecost == null ){
+
+            console.log("Cannot build on this property");
             return;
 
         }
@@ -388,13 +490,15 @@ io.on('connection', function(socket){
             socket.data.money = socket.data.money - rooms[room].board.territories[position].housecost;
             rooms[room].board.territories[position].houses = 0; 
             rooms[room].board.territories[position].hotels = 1;
-            console.log("Hotel Property Built");
+            io.to(room).emit("logMessage", `Player ${socket.data.username} has build a hotel ${rooms[room].board.territories[position].name}`)
+            //console.log("Hotel Property Built");
         }
         else {
 
             socket.data.money = socket.data.money - rooms[room].board.territories[position].housecost;
-            rooms[room].board.territories[position].houses = rooms[room].board.territories[position].houses + 1 ; 
-            console.log("House property built");
+            rooms[room].board.territories[position].houses = rooms[room].board.territories[position].houses + 1 ;
+            io.to(room).emit("logMessage", `Player ${socket.data.username} has build a house on the property ${rooms[room].board.territories[position].name}`)
+            //console.log("House property built");
 
         }
 
@@ -409,6 +513,14 @@ io.on('connection', function(socket){
     socket.on('mortgageEvent', function(position){
 
         let room = Array.from(socket.rooms)[1];
+
+        // Si le joueur à déjà perdu
+        if ( socket.data.isWatching || socket.data.hasLost ){
+
+            console.log("You have already lost");
+            return;
+
+        }
 
         // Check if the property is owned by the player or not 
         if ( rooms[room].board.territories[position].ownedBy != socket.data.username ){
@@ -431,7 +543,8 @@ io.on('connection', function(socket){
         socket.data.money = socket.data.money + rooms[room].board.territories[position].mortgageValue;
 
         // Emitting new state
-        console.log("Property Mortgaged");
+        //console.log("Property Mortgaged");
+        io.to(room).emit("logMessage", `Player ${socket.data.username} has mortgaged the property ${rooms[room].board.territories[position].name}`)
         io.to(room).emit("propertyMortgaged", socket.data.money, rooms[room].board);
         
 
@@ -441,6 +554,14 @@ io.on('connection', function(socket){
 
         // Get the room
         let room = Array.from(socket.rooms)[1];
+
+        // Si le joueur à déjà perdu
+        if ( socket.data.isWatching || socket.data.hasLost ){
+
+            console.log("You have already lost");
+            return;
+
+        }
 
         // Check if the property is owned by the player or not 
         if ( rooms[room].board.territories[position].ownedBy != socket.data.username ){
@@ -471,12 +592,26 @@ io.on('connection', function(socket){
         socket.data.money = socket.data.money - rooms[room].board.territories[position].mortgageValue;
 
         // Emitting new data
-        console.log("Property Demortgaged");
+        io.to(room).emit("logMessage", `Player ${socket.data.username} has demortgaged the property ${rooms[room].board.territories[position].name}`)
+        //console.log("Property Demortgaged");
         io.to(room).emit("propertyDemortgaged", socket.data.money, rooms[room].board);
 
 
     })
 
+    // Player has lost and watching 
+    socket.on("watchingEvent", function(){
+
+        let room = Array.from(socket.rooms)[1];
+
+        socket.data.isWatching = true;
+
+        io.to(room).emit("playerWatching", socket.data.username);
+
+    })
+
+
+    // Player is quitting
     socket.on('disconnecting', function(){
 
         // Get the room
@@ -489,11 +624,13 @@ io.on('connection', function(socket){
             players.forEach(x => { 
                 
                 if ( socket.id != x ){
-                    console.log("I get here\n");
+
                     player.position = io.sockets.sockets.get(x).data.position;
                     player.money = io.sockets.sockets.get(x).data.money;
                     player.hasLost = io.sockets.sockets.get(x).data.hasLost;
-                    player.jailCountdown = io.sockets.sockets.get(x).data.jailCountdown
+                    player.jailCountdown = io.sockets.sockets.get(x).data.jailCountdown;
+                    player.isWatching = io.sockets.sockets.get(x).data.isWatching;
+                    player.hasWon = io.sockets.sockets.get(x).data.hasWon;
                     playersMap[io.sockets.sockets.get(x).data.username] = player
                 }
             
@@ -501,10 +638,15 @@ io.on('connection', function(socket){
 
             let index = rooms[room].playersArray.indexOf(socket.id);
             rooms[room].playersArray.splice(index, 1);
-            console.log("Player has quit");
-
-
+            io.to(room).emit("logMessage", `Player ${socket.data.username} has disconnected`)
             io.to(room).emit("playerJoined", playersMap)
+
+    })
+
+
+    socket.on("playerQuitting", function(){
+
+        socket.disconnect();
 
     })
 

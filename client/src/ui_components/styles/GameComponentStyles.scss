@@ -52,6 +52,11 @@
     width : 95%;
     background-color: #6270be;
     border-radius: 1%;
+    display : flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    overflow: hidden;
+    
 }
 
 
@@ -112,4 +117,11 @@
     width : 22%;
     background-color: black;
 
+}
+
+.log-message{
+
+    margin : 5px;
+    font-weight: 500;
+    font-size : 1.15rem;
 }

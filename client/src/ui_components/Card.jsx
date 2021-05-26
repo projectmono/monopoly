@@ -35,7 +35,7 @@ class Card extends Component {
         
         <CardBody span={this.props.span} backgroundImg = {this.props.backgroundImg} className = {`card-body-grid-container`}>
 
-            {Object.keys(this.props.players).map(player => this.props.players[player].position == this.props.position ? 
+            {Object.keys(this.props.players).map(player => (this.props.players[player].position == this.props.position && this.props.players[player].isWatching != true) ? 
             <Pawn pawnColor ={this.props.players[player].color}></Pawn> :
             null )}
            

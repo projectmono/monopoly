@@ -46,6 +46,7 @@ export default class Login extends Component {
         this.setRedirect = this.setRedirect.bind(this);
         this.setUserName = this.setUserName.bind(this);
         this.setChoosedColor = this.setChoosedColor.bind(this);
+        this.reloadPage = this.reloadPage.bind(this);
     }
 
 
@@ -145,6 +146,12 @@ export default class Login extends Component {
         
     }
 
+    reloadPage(){ 
+
+        
+            window.location.reload(); 
+
+    }
 
     setRedirect(){
 
@@ -174,9 +181,7 @@ export default class Login extends Component {
 
         return (
 
-
             <div className ="grid-container-center grid-container-styles">
-                
 
                 <div className="grid-item">
                     {this.state.response[1]}
