@@ -26,7 +26,7 @@ function joinRoom(io, socket, roomName){
         console.log(`${socket.data.username} failed to join a room because it does not exist`)
         return [false, "Room does not exist"];
         
-    }else if (io.sockets.adapter.rooms.get(roomName).size >= 6){
+    }else if (io.sockets.adapter.rooms.get(roomName).size >= 5){
 
         console.log(`${socket.data.username} failed to join a room because it is full`)
         return [false, "Room is full"];

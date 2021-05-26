@@ -36,10 +36,11 @@ io.on('connection', function(socket){
         socket.data.hasTurn = false;
         socket.data.hasRolled = false;
         socket.data.hasLost = false;
+        socket.data.hasWon = false
         socket.data.jailCountdown = 0;
         socket.data.username = userName;
         socket.data.position = 0;
-        socket.data.money = 199;
+        socket.data.money = 1500;
 
         roomNameOk =  createRoom(io ,socket, roomName)
         
@@ -68,6 +69,7 @@ io.on('connection', function(socket){
 
             socket.emit("board", board);
             io.to(roomName).emit("playerJoined", playersMap, socket.data.username)
+            io.to(roomName).emit("logMessage", `Player ${socket.data.username} has created the room`)
 
         }
         
@@ -83,7 +85,7 @@ io.on('connection', function(socket){
 
         for ( const player of players ){
 
-            if ( !io.sockets.sockets.get(player).data.ready && players.size < 2 ){
+            if ( !io.sockets.sockets.get(player).data.ready && players.size <= 5 ){
                 break;
             }
 
@@ -96,10 +98,11 @@ io.on('connection', function(socket){
         socket.data.hasTurn = false;
         socket.data.hasRolled = false;
         socket.data.hasLost = false;
+        socket.data.hasWon = false
         socket.data.jailCountdown = 0;
         socket.data.username = userName;
         socket.data.position = 0;
-        socket.data.money = 199;
+        socket.data.money = 1500;
 
 
         roomNameOk =  joinRoom(io ,socket, roomName)
@@ -126,6 +129,7 @@ io.on('connection', function(socket){
             
             })
             io.to(roomName).emit("playerJoined", playersMap, socket.data.username)
+            io.to(roomName).emit("logMessage", `Player ${socket.data.username} has joined the room`)
 
         }
 
@@ -159,7 +163,7 @@ io.on('connection', function(socket){
 
                 // Check if it is owned by anybody
                 if ( rooms[room].board.territories[socket.data.position].ownedBy && rooms[room].board.territories[socket.data.position].ownedBy != socket.data.username ){
-                   console.log("i get here\n"); players.forEach(x => {
+                   players.forEach(x => {
 
                         if ( io.sockets.sockets.get(x).data.username == rooms[room].board.territories[socket.data.position].ownedBy){
 
@@ -299,7 +303,7 @@ io.on('connection', function(socket){
     socket.data.ready = true;
     io.to(room).emit("logMessage", `Player ${socket.data.username} is ready`)
 
-        if ( io.sockets.adapter.rooms.get(room).size >= 1 ){
+        if ( io.sockets.adapter.rooms.get(room).size >= 2 ){
         
             for ( x of rooms[room].playersArray ){
 
@@ -354,11 +358,10 @@ io.on('connection', function(socket){
                     io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.hasTurn = true;
                     socket.emit("playerHasTurn", io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username);
                     io.to(room).emit("logMessage", `Player's ${io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username} turn`)
-                    //console.log("Player has turn : " + io.sockets.sockets.get( rooms[room].playersArray[currentPlayer % io.sockets.adapter.rooms.get(room).size] ).data.username )
                 }
 
 
-            } , 10);
+            } , 1000);
 
         }
     }    
@@ -457,7 +460,7 @@ io.on('connection', function(socket){
         
         // If the player does not or cannot own the property or is not allowed to build yet
 
-        /*for ( x of rooms[room].board.territories[position].groupe ){
+        for ( x of rooms[room].board.territories[position].groupe ){
 
             if ( rooms[room].board.territories[x].ownedBy != socket.data.username ){
 
@@ -466,7 +469,7 @@ io.on('connection', function(socket){
 
             }
 
-        }*/
+        }
 
         // Check if player has enough money
         if ( socket.data.money < rooms[room].board.territories[position].housecost ){
@@ -593,7 +596,6 @@ io.on('connection', function(socket){
 
         // Emitting new data
         io.to(room).emit("logMessage", `Player ${socket.data.username} has demortgaged the property ${rooms[room].board.territories[position].name}`)
-        //console.log("Property Demortgaged");
         io.to(room).emit("propertyDemortgaged", socket.data.money, rooms[room].board);
 
 
@@ -636,8 +638,10 @@ io.on('connection', function(socket){
             
             })
 
-            let index = rooms[room].playersArray.indexOf(socket.id);
-            rooms[room].playersArray.splice(index, 1);
+            if ( rooms[room].playersArray != null ){
+                let index = rooms[room].playersArray.indexOf(socket.id);
+                rooms[room].playersArray.splice(index, 1);
+            }
             io.to(room).emit("logMessage", `Player ${socket.data.username} has disconnected`)
             io.to(room).emit("playerJoined", playersMap)
 

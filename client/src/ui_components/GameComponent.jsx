@@ -96,7 +96,6 @@ class GameComponent extends Component {
 
             let playersCopy = this.assignColors(players)
             let logCopy = [...this.state.log];
-            logCopy.unshift("Player " + username + " joined");
             this.setState({
 
                 players : playersCopy,
